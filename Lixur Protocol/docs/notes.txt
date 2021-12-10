@@ -1,0 +1,34 @@
+==~~Notes~~==
+
+runNode.py is the main program for this simple IOTA 
+
+* To create a new Transaction, send a POST request to the node, providing ip:port and transaction as POST request parameters as follows,
+(i.e: sender address, receivers address, value)
+
+$ curl -v localhost:4001/transactions/new -X POST -d "sndr_addr=213123131&rcvr_addr=2321231231245&value=110"
+
+TODO: We don't check if the sender has enough resources in their wallet right now. For that purpose, we might have to search the whole Tangle (local copy of it) and look for transactions involving sender's address, and calculate his balance. This would be validation part
+
+
+* We can check the balance of a wallet address, from a node. 
+For this, send a POST request with addrees=XYZ parameter like this;
+$ curl -v localhost:4001/wallet/balance -X POST -d "address=0123"
+
+
+* You can list all the addresses of the wallet of a specific Node like this;
+$ curl -v localhost:4001/wallet/addresses -X GET;
+
+
+* Get the current view of current node's Tangle in JSON format, send the following GET request
+$ curl localhost:4001/dag -X GET
+
+
+* To get a PNG image of the current node's Tangle, send the following GET request,
+$ curl localhost:4001/dag/png -X GET --output tangle.png ; eog --fullscreen tangle.png &
+TODO: add a printed timestamp on the PNG file
+
+
+* We can register a new neighbour to this node.
+$ curl -v localhost:4001/node/register_neighbours -H "Content-Type: application/json" -X POST -d '{"neighbours":[{"ip":"localhost", "port":"8080"}, {"ip":"192.168.1.2", "port":"1234"}]}'
+
+In the above POST request, we send a JSON string, which has an list item "neighbours". This list has (ip, port) pairs for each neighbour we are trying to register. 

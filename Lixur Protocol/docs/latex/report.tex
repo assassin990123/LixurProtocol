@@ -1,0 +1,310 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+%\graphicspath{{../images/}}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[inline]{enumitem}
+\usepackage{listings}
+
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage{hyperref}	%make clickable TOC
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
+
+
+%New colors defined below for code listings inline
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+%"mystyle" code listing set
+\lstset{style=mystyle}
+
+
+
+\title{Benign Network Traffic Generation Scripts}
+\author{ISOT Lab \\ Uni of Victoria}
+\date{\today}
+\begin{document}
+\maketitle
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+\tableofcontents
+\pagebreak
+
+\section{Virtual Network}
+In our testbed setup, as shown in Figure~\ref{fig:networkdiagram}, we use 2 VMs; 
+\textbf{Kali} as \textit{client} and \textbf{Ubuntu} as \textit{server}. 
+VMs are in the same subnet for testing, they could be attached to internet too, 
+does not have to be host-only network. 
+We are using a fresh install of Kali~\cite{kalidownload}, downloaded as pre-built OVA file and imported into Virtualbox.
+Python script run on Kali and generate requests for several services running on the server (ubuntu).
+Required python libraries and streaming clients were installed on top of Kali VM.
+A shell script ($prepare\_client\_kali.sh$) can be run once on Kali to install and configure all the required packages.
+
+
+As server VM, \texttt{SaturnW} virtual machine is used. 
+It is running Ubuntu Server 16.04.4 LTS.
+\texttt{SaturnW} already has SSH server (openssh-server).
+On top of \texttt{SaturnW}; \textbf{telnetd}, \textbf{vsftpd}, and \textbf{FFserver} are installed.
+We have included a shell script \textbf{($prepare\_server\_saturnw.sh$)} to install the required packages.
+This script will modify the config files of installed servers.
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{../images/network.png}
+\label{fig:networkdiagram}
+\caption{network setup}
+\end{figure}
+
+\section{Scripts}
+\subsection{$prepare\_server\_saturnw.sh$}
+This shell script will be run on the \texttt{SaturnW}, it will update/upgrade the OS, 
+then install required packages/servers.
+The script will download an \textit{MP3} file from Dropbox (internet connection needed), using \texttt{wget} utility. 
+For testing, only one \textit{MP3} file (3 minute in length) is configured to be served by \texttt{FFserver}. 
+Server config can be modified to serve multiple files as needed. 
+
+After each restart of the \texttt{SaturnW} VM, it is required to run this scripts to start the \texttt{FFserver}.
+
+\subsection{$prepare\_client\_kali.sh$}
+This bash/shell script will install the required packages on \texttt{Kali} VM to run the $connections\_generator.py$ script. Required python packages are \texttt{paramiko}, \texttt{pycrypto}, \texttt{pysftp}. 
+It also installs \texttt{openRTSP} and \texttt{vlc} command line clients in order to stream multimedia files.
+
+
+\subsection{\texttt{$connections\_generator.py$}}
+This python script is the main script that initiates connections from Kali to Ubuntu. 
+It will start SSH, FTP, SFTP, Telnet and Multimedia streaming connections. 
+There is a function in the script for each protocol, they are explained below.
+
+To run $connections\_generator.py$ script with invoking different protocols, you can use the command line arguments.
+Below figure shows the help menu of script;
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{../images/connections_generator_usage.png}
+\label{fig:scripthelpmenu}
+%\caption{network setup}
+\end{figure}
+
+For instance, if you'd like to start \textbf{ftp} and \textbf{telnet} functions only, you can invoke the python script like this;
+
+\begin{lstlisting}[language=bash, basicstyle=\footnotesize, numbers=none]
+python connections_generator.py --ftp --telnet
+\end{lstlisting}
+
+Without any arguments, it won't call any protocol functions. 
+All protocol functions are parametrized, you can change the IP address, port number, file size and 
+other variables for functions while calling each function from the \textit{\textbf{main()}}.
+Protocol functions are described in detail below.
+
+\subsubsection{SSH}
+To connect to SSH server on \texttt{SaturnW}, we used \texttt{paramiko}~\cite{paramiko} SSH python library. 
+The function definition for SSH method is as follows;
+
+\begin{lstlisting}[language=Python, basicstyle=\footnotesize,numbers=none]
+def mySsh(numRndCmds=1, h="192.168.56.104", u="saturn", p="****"):
+\end{lstlisting}
+
+The first argument is the \textit{"number of random commands"} to issue after the SSH connection is established, default value is 1. 
+The second argument is the IP address of the SSH server. 
+The default IP address provided in the function signature above, is the IP address assigned to SaturnW in our VirtualBox testbed environment. 
+It could be any IP address as long as it is reachable from the client running the python script. 
+$3^{rd}$ ("u") and $4^{th}$ arguments("p") are the username and password, for authenticating to SaturnW SSH server.
+
+After the ssh connection is established, the script will issue random linux commands that would mimic a system admin. 
+We made a list of linux commands that are frequently used by system admins such as cron, ps, df, du, ifconfig etc.~\cite{lnxcmd1,lnxcmd2}
+
+\subsubsection{FTP}
+For FTP connections, the python script has a function to connect \texttt{SaturnW}'s \texttt{vsftp} server.
+This function's signature is as follows;
+\begin{lstlisting}[language=Python, numbers=none]
+def myFtp(numKbytes=1, h="192.168.56.104",u="saturn", p="***"):
+\end{lstlisting}
+The first parameter is the size (in KBytes) of the random file that will be created with \texttt{"dd"} command. 
+The second parameter is the IP address of the FTP server. 
+Again, the default value is the address we have used in the virtualbox network for testing.
+\texttt{u} and \texttt{p} are the credentials to login to the FTP server installed on \texttt{SaturnW}.
+
+It will connect to the ftp server, create a file with random bytes using \texttt{dd} tool, 
+then upload the random file, sleep for 2 seconds, finally it will download the same file back to Kali.
+
+
+\subsubsection{SFTP}
+The next protocol we choose to generate traffic is Secure FTP (SFTP). 
+The following function in the python script is written for this purpose;
+\begin{lstlisting}[language=Python, numbers=none]
+def mySftp(numKbytes=1, h="192.168.56.104",u="saturn", p="****"):
+\end{lstlisting}
+It's signature is the same as the FTP's signature, where the first argument is the number of random KBytes created with the  \texttt{dd} tool.
+The second argument, \textbf{h} is the IP address of the host, \textbf{u} is the SFTP login username, and \textbf{p} is the password.
+
+The SFTP function does the exact same operation as the FTP function, only the underlying protocol is different.
+
+\subsubsection{Telnet}
+Telnet is another protocol that script generates connections with. 
+The following is the signature for Telnet function;
+\begin{lstlisting}[language=Python, numbers=none]
+def myTelnet(numRndCmds=1, h="192.168.56.104", u="saturn", p="**"):
+\end{lstlisting}
+
+The first argument is the number of commands to execute after succesful Telnet connection.
+The second argument is the IP Address of the Telnet host, where the default value is the address we used in testing locally. 
+\textbf{u} is the username, and \textbf{p} is the password to login to the Telnet server.
+
+This function uses Python's \texttt{telnetlib} to initiate the connection.
+After connection is established, it executes random linux commands.
+The number of random commands is specified as the first parameter to this function, where by default it only executes \textbf{1} linux command.
+
+\subsubsection{Multimedia Streaming}
+For generating additional benign network traffic, we decided to make use of multimedia streaming.
+The multimedia Streaming server is installed on \textbf{SaturnW}, and streaming client(s) are installed on \textbf{Kali}.
+As multimedia Streaming server, we chose \textbf{FFserver}. 
+The main reason to pick \textbf{FFserver} over other options was the ease of use and configuration.
+Provided scripts install and configure the FFserver on SaturnW. 
+Since the multimedia streams are initiated from a python script, we decided to use \textbf{cvlc} (command line version of vlc player), and \textbf{openRTSP}. 
+
+\textbf{cvlc} can request multimedia streams with HTTP and RTSP over UDP.
+\textbf{openRTSP} can ask for RTSP over TCP packets for multimedia streams.
+
+We have a function in the python script to automate streaming from SaturnW's FFserver to Kali's cvlc and openRTSP clients.
+Here is the function signature:
+\begin{lstlisting}[language=Python, numbers=none]
+def myVideoStream(numOfStreams=1, h="192.168.56.104", httpPort="8090",rtspPort="5454"):
+\end{lstlisting}
+The first parameter here is the number of multimedia streams that we want to initiate. 
+The second parameter is the IP Address of the streaming server.
+FFserver is capable of streaming over HTTP and RTSP, thus it listens on 2 ports.
+The third argument specifies the HTTP Port, and the last argument specifies the RTSP Port that FFserver listens on.
+
+The function will randomly choose the streaming client (openRTSP or cvlc) and randomly choose the streaming protocol (HTTP, RTSP over UDP, RTSP over TCP), and then send the request to FFserver and start streaming. 
+Streams are done in parallel, so there might be multiple streaming sessions at the same time if the \textbf{numOfStreams} is greater than 1.
+It will sleep 1 second before requesting the next multimedia stream.
+
+Below are more details on the streaming server, supported formats, and streaming clients.
+
+\paragraph{FFServer - FFmpeg Streaming Server:}
+%\linebreak
+\texttt{FFserver} receives prerecorded files or FFM streams from some ffmpeg instance as input, then streams them over \texttt{HTTP/RTSP/RTP/UDP/TCP}. 
+An \texttt{FFserver} instance will listen on some port as specified in the configuration file. 
+
+
+FFserver configuration is defined in \texttt{/etc/ffserver} file. 
+In this file, input streams are called feeds, and each one is specified by a $<$Feed$>$ section in the configuration file.
+For each feed you can have different output streams in various formats, each one specified by a $<$Stream$>$ section in the configuration file.
+
+\paragraph{Supported Container Formats for Encoding:}
+%\linebreak
+\begin{enumerate*}[label=(\roman*)]
+	\item avi, 
+	\item asf, 
+	\item flv,
+	\item swf, 
+	\item matroska, 
+	\item mpeg-ts
+\end{enumerate*}
+
+\paragraph{Supported Network Protocols:}
+%\linebreak
+\begin{enumerate*}[label=(\roman*)]
+	\item HTTP (default port: 8090)
+	\item RTSP (default port: 5454)
+	\item UDP
+	\item TCP
+	\item RTP
+\end{enumerate*}
+
+\paragraph{Requesting Multimedia Streams:}
+%\linebreak
+Using \texttt{vlc} player command line version \texttt{cvlc} (without GUI), we can start a multimedia stream from \texttt{FFSERVER}.
+We can stream MP3 file over HTTP, by sending request to port 8090 of SaturnW, where FFSERVER listens.
+Also, same multimedia files can be streamed using RTSP, by sending the request to port 5454, as shown below
+
+\begin{lstlisting}[language=bash, numbers=none]
+$ cvlc http://192.168.56.104:8090/alexiane.mp3
+$ cvlc rtsp://192.168.56.104:5454/alexiane-rtsp.mp3
+\end{lstlisting}
+
+When requested via HTTP, the FFserver sends the MP3 packets very quickly with TCP packets. 
+Each packet carries max amount of data (~1514 bytes). It is almost like downloading a file. 
+When network packets are watched via Wireshark, 3 minutes long music(mp3) file of size 4.3 MBytes, generated network traffic for 1 second only.
+
+On the other hand, when requesting via RTSP (at port 5454 of FFserver), the multimedia file is sent over UDP packets (1312 bytes).
+They set up the connection and session parameters over TCP/RTSP, then start the stream via UDP.
+\texttt{FFserver} sends RTCP (Real-Time-Control-Protocol) packets (70 bytes) every 5 seconds as a feedback report.
+At the end of the media stream, the client sends RTSP Teardown message and the connection closes.
+
+
+The difference between HTTP and RTSP streaming is the duration of media download.
+In RTSP stream, UDP data packets are transmitted over the total length of the media file. For instance, if the MP3 file contains a song of 3 minutesm the UDP packets will be sent over 3 minutes.
+On the other hand, HTTP multimedia stream, once initiated, will download the whole media file via TCP as quickly as possible, 
+not generating traffic over the total duration of media/music file.
+
+Even after the stream is completed, \texttt{cvlc} does not kill itself. The command
+\begin{lstlisting}[language=bash, numbers=none]
+$ ps -aux | grep vlc
+\end{lstlisting}
+
+returns the running \texttt{vlc} processes. We need to kill vlc processes explicitly.
+\begin{lstlisting}[language=bash, numbers=none]
+$ killall vlc
+\end{lstlisting}
+
+
+\texttt{cvlc} supports only UDP when using RTSP. 
+openRTSP has an option to (-t) to stream RTP/RTCP data over TCP, rather than (the usual) UDP.
+\begin{lstlisting}[language=bash, numbers=none]
+$ openRTSP -r -p 1000 -t rtsp://192.168.56.104:5454/alex-rtsp.mp3
+\end{lstlisting}
+
+\textbf{-r:} play the RTP stream but do not record them, just drop them when they arrive to the port specified with \textbf{-p} option.
+
+Using \texttt{openRTSP} with \texttt{-t} we can generate TCP streams 
+(that are carrying the multimedia content as well as RTSP/RTSP) over the length of the music file.
+
+
+\section{Appendix}
+\subsection{Source Code}
+\subsubsection{$connections\_generator.py$}
+\lstinputlisting[language=Python, basicstyle=\tiny, caption=ConnectionsGenerator Python Script]{../../benign/connections_generator.py}
+
+\subsubsection{$prepare\_server\_saturnw.sh$}
+\lstinputlisting[language=Bash, basicstyle=\tiny, caption=Prepare Server SaturnW Bash script]{../../benign/prepare_server_saturnw.sh}
+
+\subsubsection{$prepare\_client\_kali.sh$}
+\lstinputlisting[language=Bash, basicstyle=\tiny, caption=Prepare Client Kali Bash Script]{../../benign/prepare_client_kali.sh}
+
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{1}
+\bibitem{kalidownload} Kali Linux VirtualBox VM, (OVA) {\em "https://www.offensive-security.com/kali-linux-vm-vmware-virtualbox-hyperv-image-download/"}.
+\bibitem{paramiko} The Leading Native Python SSHv2 protocol Library {\em"https://github.com/paramiko/paramiko"}.
+\bibitem{lnxcmd1} Linux Commands for Beginning Server Administrators {\em"http://www.reallylinux.com/docs/admin.shtml}
+\bibitem{lnxcmd2} The 10 Most Important Linux Commands {\em"http://www.informit.com/blogs/blog.aspx?b=2e1a39cd-e73b-4f8d-82f2-5f9b769132e1"}
+\end{thebibliography}
+
+\end{document}
