@@ -9,9 +9,10 @@
 * To create a new transaction, send a POST request to the node, providing ip:port and transaction as POST request parameters as follows,
 * 
     ` $ curl -v 123.4.5.6 78900/transactions/new -X POST -d "sndr_addr=(insert_here)&rcvr_addr=(insert_here)&value=(insert_here)" `
+    
+If you run into any errors, you may need to execeute `remove-item alias:curl` before you execure the curl commands
 
     * TODO: We don't check if the sender has enough resources in their wallet right now. For that purpose, we might have to search the whole Tangle (local copy of it) and look for transactions involving sender's address, and calculate his balance. This would be validation part
-
 
 * We can check the balance of a wallet address, from a node. For this, send a POST request with addrees=XYZ parameter like this;
 
