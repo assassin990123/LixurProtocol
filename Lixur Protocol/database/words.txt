@@ -868,7 +868,7 @@ helmet
 help
 hodl
 hero
-hidden
+hecker
 high
 hill
 hint
@@ -1554,7 +1554,7 @@ school
 science
 scissors
 scorpion
-scout
+scemer
 scrap
 screen
 script
