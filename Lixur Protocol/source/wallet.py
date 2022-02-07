@@ -9,7 +9,7 @@ import os
 import binascii
 import unicodedata
 from base64 import b64encode, b64decode
-from cryptography import KeyGen as keygen
+from source.cryptography import KeyGen as keygen
 import random
 
 # Instantiate necessary objects
@@ -80,7 +80,6 @@ class Wallet:
                 f.write(x)
 
             y = x.replace(" ", "")
-            decryption_password = x
             input_encrypt = cryptography.get_private_key(cryptography)
             encrypt = str(input_encrypt)
             encrypt_x = bytes(encrypt, 'utf-8')

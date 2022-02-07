@@ -192,24 +192,42 @@ class Graph():
     def update_cumulative_weights(self, transaction):
         pass
 
-    def make_transaction(self, sender_public_key, recipient_public_key, amount, signature, info, approved_tx, nonces, previous_hashes):
-        '''
-            1. Pick at least two transactions in graph to confirm
-            # 2. Check picked transactions for conflict
-            # 3. Approve non conflicting transactions
-            4. Perform proof of work
-            5. Send transaction to graph
-        '''
-        confirmed_transactions = self.confirm_transactions()
-        if len(confirmed_transactions) >= 2:
-            self.approved_tx = self.confirm_transactions()
-            approved_tx = self.approved_tx
-            new_transaction = tx(sender_public_key, recipient_public_key, amount, info, signature, approved_tx, nonces,
-            previous_hashes)
-            self.update_cumulative_weights(new_transaction)
-            return self.attach_transaction(new_transaction, confirmed_transactions)
+    def make_transaction(self, sender_public_key, recipient_public_key, amount, signature, info, nonces, previous_hashes):
+        # if sender_public_key is None or recipient_public_key is None or signature is None or nonces is None or previous_hashes is None:
+        #     missing_fields = []
+        #     if sender_public_key is None:
+        #         x = "Sender Public Key"
+        #         missing_fields.append(x)
+        #     if recipient_public_key is None:
+        #         y = "Recipient Public Key"
+        #         missing_fields.append(y)
+        #     if signature is None:
+        #         z = "Signature"
+        #         missing_fields.append(z)
+        #     if nonces is None:
+        #         a = "Nonces"
+        #         missing_fields.append(a)
+        #     if previous_hashes is None:
+        #         b = "Previous Hashes"
+        #         missing_fields.append(b)
+        #     missing_fields = ', '.join(missing_fields)
+        #     print("[!] Cannot make transaction. The following fields are empty: %s" % missing_fields)
+        #     return None
+        # else:
+            confirmed_transactions = self.confirm_transactions()
+            if len(confirmed_transactions) >= 2:
+                approved_tx = confirmed_transactions
+                new_transaction = tx(sender_public_key, recipient_public_key, amount, info, signature, approved_tx, nonces, previous_hashes)
+                self.update_cumulative_weights(new_transaction)
+                return self.attach_transaction(new_transaction, confirmed_transactions)
+            return {'[-] Transaction Failed...'}
 
-        return {'[-] Transaction Failed...'}
+
+
+
+
+
+
 
 
 

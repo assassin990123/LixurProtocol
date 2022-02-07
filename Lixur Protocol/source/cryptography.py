@@ -8,7 +8,6 @@ from pqcrypto.sign.falcon_1024 import verify, generate_keypair, sign
 from hashlib import sha256
 import binascii
 
-
 class KeyGen:
     def __init__(self):
         self.public_key, self.private_key = generate_keypair()  # Keys are in bytes
