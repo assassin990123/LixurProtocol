@@ -56,7 +56,6 @@ class Wallet:
 
         if genesis == True:
             minted_tx = (graph_data[(list(graph_data.keys())[0])])
-            print(minted_tx)
             balance = int(minted_tx["amount"])
 
         else:
