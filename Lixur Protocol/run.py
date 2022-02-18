@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import Flask, jsonify, request
 from flask import send_file
 import json
@@ -27,12 +29,25 @@ def register_new_node():
 
 @app.route('/transactions/new', methods=['GET', 'POST'])
 def new_transaction():
-    response = node.graph.make_transaction(
-        request.form.get('sender_public_key'),
-        request.form.get('recipient_public_key'),
-        request.form.get('amount'),
-        cryptography.sign_tx(cryptography.get_ex_public_key(cryptography), cryptography.get_ex_private_key(cryptography), "Lixur"),
-        request.form.get('info'))
+    private_key = cryptography.get_ex_private_key(cryptography)
+    public_key = cryptography.get_ex_public_key(cryptography)
+    alphanumeric_address = cryptography.get_ex_alphanumeric_address(cryptography)
+
+    if alphanumeric_address == None:
+        return jsonify({"Message": "No wallet found, you need a wallet to make transactions!"}), 400
+
+    else:
+        if private_key and public_key != None:
+            response = node.graph.make_transaction(
+                alphanumeric_address,
+                request.form.get('recipient_public_key'),
+                request.form.get('amount'),
+                cryptography.sign_tx(public_key, private_key, "Lixur"),
+                request.form.get('info'))
+        else:
+            print("[-] Private key or public key is not found ")
+            return None, 400
+
     return jsonify(response), 201
 
 @app.route('/wallet', methods=['GET', 'POST'])
