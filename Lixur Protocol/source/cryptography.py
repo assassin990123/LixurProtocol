@@ -199,39 +199,92 @@ class KeyGen:
 
     @staticmethod
     def get_ex_private_key(self):
-        if self.ex_private_key != None:
+
+        with open("source/lixur_keystore.txt", "r") as f:
+            keystore_dict = eval(f.read())
+            ks_cipher = b64decode(keystore_dict['cipher_text'].encode('utf-8'))
+            ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
+            ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
+            ks_hash = keystore_dict['hash']
+
+        with open("source/phrase.txt", "r") as f:
+            user_input = f.read().replace(" ", "")
+
+        if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
+            cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
+            plaintext = cipher.decrypt(ks_cipher)
+            cipher.verify(ks_tag)
+
+            self.ex_private_key = eval(plaintext.decode('utf-8'))['_']
             return self.ex_private_key
         else:
-            print("You have not generated a wallet yet!")
-            return None
+            print(f"Decryption failed!, hash of input: {hashed_input} does not match hash of keystore: {ks_hash}")
 
     @staticmethod
     def get_ex_public_key(self):
-        if self.ex_public_key != None:
+
+        with open("source/lixur_keystore.txt", "r") as f:
+            keystore_dict = eval(f.read())
+            ks_cipher = b64decode(keystore_dict['cipher_text'].encode('utf-8'))
+            ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
+            ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
+            ks_hash = keystore_dict['hash']
+
+        with open("source/phrase.txt", "r") as f:
+            user_input = f.read().replace(" ", "")
+
+        if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
+            cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
+            plaintext = cipher.decrypt(ks_cipher)
+            cipher.verify(ks_tag)
+
+            self.ex_public_key = eval(plaintext.decode('utf-8'))['__']
             return self.ex_public_key
         else:
-            print("You have not generated a wallet yet!")
-            return None
+            print(f"Decryption failed!, hash of input: {hashed_input} does not match the hash of keystore: {ks_hash}")
 
     @staticmethod
     def get_ex_alphanumeric_address(self):
-        if self.ex_alphanumeric_address != None:
+        with open("source/lixur_keystore.txt", "r") as f:
+            keystore_dict = eval(f.read())
+            ks_cipher = b64decode(keystore_dict['cipher_text'].encode('utf-8'))
+            ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
+            ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
+            ks_hash = keystore_dict['hash']
+
+        with open("source/phrase.txt", "r") as f:
+            user_input = f.read().replace(" ", "")
+
+        if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
+            cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
+            plaintext = cipher.decrypt(ks_cipher)
+            cipher.verify(ks_tag)
+
+            self.ex_public_key = eval(plaintext.decode('utf-8'))['__']
+            self.ex_alphanumeric_address = sha256(self.ex_public_key).hexdigest()
             return self.ex_alphanumeric_address
-        else:
-            print("You have not generated a wallet yet!")
-            return None
 
     @staticmethod
     def get_ex_readable_address(self):
-        if self.ex_readable_address != None:
+        with open("source/lixur_keystore.txt", "r") as f:
+            keystore_dict = eval(f.read())
+            ks_cipher = b64decode(keystore_dict['cipher_text'].encode('utf-8'))
+            ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
+            ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
+            ks_hash = keystore_dict['hash']
+
+        with open("source/phrase.txt", "r") as f:
+            user_input = f.read().replace(" ", "")
+
+        if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
+            cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
+            plaintext = cipher.decrypt(ks_cipher)
+            cipher.verify(ks_tag)
+
+            self.ex_readable_address = eval(plaintext.decode('utf-8'))['___']
             return self.ex_readable_address
         else:
-            if self.is_new_wallet == True:
-                print("You have not generated a wallet yet!")
-                pass
-            else:
-                print("You don't have a readable address.")
-                return None
+            print(f"Decryption failed!, hash of input: {hashed_input} does not match hash of keystore: {ks_hash}")
 
     @staticmethod
     def get_ex_address_pair(self):
