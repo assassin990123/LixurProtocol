@@ -11,3 +11,5 @@ To check network stats, head to: `127.0.0.1:5000/stats`
 To check node status, head to: `127.0.0.1:5000/node`
 
 You can replace `127.0.0.1:5000` with a new IP:Port pair
+
+If you find any bugs, or anything that should be added, please add them or send me an email at `naisukhy@gmail.com`
