@@ -4,7 +4,7 @@ Welcome! We're glad to have you here!
 
 Lixur is an open-sourced project building a distributed ledger platform. Designed to be extremely beginner friendly, no-code SDKs with AI assistance ensures that anyone, anywhere can deploy decentralized applications on Lixur. Lixur uses things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper here: https://drive.google.com/file/d/1mfqufIxTuvegdc8VjfgJahROHA6CBJHM/view?usp=sharing
 
-Addressing a potential concern: For those examining the code and are concerned with the speed of Python, This code will soon feature a JIT Complier that will accelerate the code either with Numba, accelerating execution speed on par with Go or Julia. Solving the speed dilemma.
+Addressing a potential concern: For those examining the code and are concerned with the speed of Python, This code will soon feature a JIT Complier that will accelerate the code either with Numba, accelerating execution speed on par with Go, C++ or Julia. Solving the speed dilemma.
 
 ![image](https://user-images.githubusercontent.com/87288707/155394541-28719860-ac4e-4db8-97d4-c7c2980cb273.png)
 ![image](https://user-images.githubusercontent.com/87288707/155394794-6cd735c6-93ea-41fc-abb3-844f90c60162.png)
