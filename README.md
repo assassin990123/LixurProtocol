@@ -16,7 +16,7 @@ You can replace `127.0.0.1:5000` with a new IP:Port pair
 
 If you find any bugs, or anything that should be added, please add them or send me an email at `naisukhy@gmail.com`
 
-Addressing a potential concern: For those examining the code and are concerned with the speed of Python, This code will soon feature a JIT Complier that will accelerate the code either with Numba, accelerating execution speed on par with Go, C++ or Julia. Solving the speed dilemma.
+Addressing a potential concern: For those examining the code and are concerned with the speed of Python, This code will soon feature a JIT Complier that will accelerate the code either with Numba, accelerating execution speed on par or even better than Go, C++ or Julia. Solving the speed dilemma. Here are some examples to illustrate this...
 
 ![image](https://user-images.githubusercontent.com/87288707/155394541-28719860-ac4e-4db8-97d4-c7c2980cb273.png)
 ![image](https://user-images.githubusercontent.com/87288707/155394794-6cd735c6-93ea-41fc-abb3-844f90c60162.png)
