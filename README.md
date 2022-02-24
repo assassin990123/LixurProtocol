@@ -9,7 +9,7 @@ Lixur uses things such as DAGs and A.I smart contracts which enables fast, priva
 This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
 
 ### How to Contribute
-Please, please join our Discord Server if you want to contribute to this project. Link: https://discord.gg/HCRAQHKGeG
+So you want to contribute? Please, please join our Discord Server if you want to contribute to this project. It's a must. Link: https://discord.gg/HCRAQHKGeG
 
 ### How to Run
 * To run a node, install the required packages (download requirements.txt), and run Flask (not in terminal!), and it should pop up with three genesis trasactions.
