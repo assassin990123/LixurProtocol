@@ -119,8 +119,9 @@ class Graph():
 
             self.graph.update({transaction.key: transaction})
             self.pending_transactions.remove(transaction)
-            return self.tx_key
             self.state += 1
+            return self.tx_key
+            
 
         else:
             self.failed_transactions.append(transaction)
