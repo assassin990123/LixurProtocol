@@ -10,8 +10,8 @@ This project is by no means complete and may feature plenty of bugs, security ho
 
 ### How to Contribute
 So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must.
-<br> [Discord Server Link](https://discord.gg/HCRAQHKGeG)
-<br> [Jetbrains Space Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
+<br> [Click here to join our Official Discord Server Link](https://discord.gg/HCRAQHKGeG)
+<br> [Click here to join our Official Jetbrains Space Group Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
 
 ### How to Run
 * To run a node, install the required packages ***(download requirements.txt)***, and run Flask ***(not in terminal!)***, and it should pop up with three genesis trasactions.
