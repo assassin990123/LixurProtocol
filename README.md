@@ -33,5 +33,5 @@ You can replace `127.0.0.1:5000` with a new IP:Port pair
 <br> ![image](https://user-images.githubusercontent.com/87288707/155395059-717c2782-cd2c-4974-bcc5-7c718c9a4561.png)
 <br> ![image](https://user-images.githubusercontent.com/87288707/155395258-632c6132-cb67-43b9-9d6c-c7021bdd2b17.png)
 
-#### Reference
+#### Other Links
 * https://users.rust-lang.org/t/why-my-rust-code-is-10-times-slower-than-python-with-numba/57738
