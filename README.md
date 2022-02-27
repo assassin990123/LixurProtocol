@@ -4,10 +4,8 @@
 
 ![image](https://user-images.githubusercontent.com/87288707/155904797-03df3651-ea9d-40e9-9998-14726876519b.png) ![image](https://img.shields.io/badge/State-Testnet%20Beta%20Under%20Construction-informational) ![image](https://img.shields.io/badge/Python-3.7.0-blueviolet)
 
-Welcome! We're glad to have you here!
-
 ### What is Lixur ?
-Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://drive.google.com/file/d/1mfqufIxTuvegdc8VjfgJahROHA6CBJHM/view?usp=sharing) 
+Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://drive.google.com/file/d/1mfqufIxTuvegdc8VjfgJahROHA6CBJHM/view?usp=sharing) 
 
 This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
 
