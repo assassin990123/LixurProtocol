@@ -1,5 +1,7 @@
 # Lixur
 
+![image](https://user-images.githubusercontent.com/87288707/155904544-85e8bb1c-36ec-4b40-86bf-2c8e8d010f1f.png)
+
 Welcome! We're glad to have you here!
 
 ### What is Lixur ?
