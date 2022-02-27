@@ -1,6 +1,7 @@
 # Lixur
 
-![image](https://user-images.githubusercontent.com/87288707/155904544-85e8bb1c-36ec-4b40-86bf-2c8e8d010f1f.png)
+![Screenshot 2021-11-18 192213ccc](https://user-images.githubusercontent.com/87288707/155904619-8dca0af8-4e9f-433f-8c2e-60e7b0e97a64.jpg)
+![image](https://user-images.githubusercontent.com/87288707/155904683-c10e596e-3721-4631-bf29-3371adbb3f17.png)
 
 Welcome! We're glad to have you here!
 
