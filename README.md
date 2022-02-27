@@ -2,7 +2,7 @@
 
 ![Screenshot 2021-11-18 192213ccc](https://user-images.githubusercontent.com/87288707/155904619-8dca0af8-4e9f-433f-8c2e-60e7b0e97a64.jpg)
 
-https://img.shields.io/aur/license/android-studio
+![image](https://user-images.githubusercontent.com/87288707/155904797-03df3651-ea9d-40e9-9998-14726876519b.png) https://img.shields.io/badge/<LABEL>-<MESSAGE>-<COLOR>
 
 Welcome! We're glad to have you here!
 
