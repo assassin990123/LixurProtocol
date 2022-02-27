@@ -3,12 +3,11 @@
 Welcome! We're glad to have you here!
 
 ### What is Lixur ?
-Lixur is an open-sourced project building a distributed ledger platform. Designed to be extremely beginner friendly, no-code SDKs with AI assistance ensures that anyone, anywhere can deploy decentralized applications on Lixur.
-Lixur uses things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://drive.google.com/file/d/1mfqufIxTuvegdc8VjfgJahROHA6CBJHM/view?usp=sharing) 
+Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://drive.google.com/file/d/1mfqufIxTuvegdc8VjfgJahROHA6CBJHM/view?usp=sharing) 
 
 This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
 
-To install PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0. This is crucial!
+You may have struggles to install the required module PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0. This is crucial!
 
 ### How to Contribute
 So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must. Our project management and our project checklist is avaiable here, it only takes a minute at most to signup!
