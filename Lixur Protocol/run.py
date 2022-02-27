@@ -5,10 +5,10 @@ import json
 import socket
 import networkx as nx
 from flask_ngrok import run_with_ngrok as run
-import matplotlib.pyplot as plt
 import os
 import sys
-import datetime, time
+import datetime
+import time
 
 # imported classes
 from source.node import Node
@@ -33,39 +33,40 @@ def new_transaction():
     alphanumeric_address = cryptography.get_ex_alphanumeric_address(cryptography)
 
     if private_key and public_key != None:
+        print("You're about to make a transaction...")
         response = node.graph.make_transaction(
             alphanumeric_address,
-            request.form.get('recipient_public_key'),
-            request.form.get('amount'),
+            input("Enter the recipient's alphanumeric address: "),
+            int(input("Enter the amount of LXR to send: ").replace(",", "")),
             cryptography.sign_tx(public_key, private_key, "Lixur"))
     else:
         return jsonify("[-] Private key or public key is not found "), 400
 
+    node.refresh()
     return jsonify(response), 201
 
 @app.route('/wallet', methods=['GET', 'POST'])
 def address_retrieval():
-    wallet = Wallet()
 
-    if wallet.access_wallet() == True:
+    alphanumeric_address = cryptography.get_ex_alphanumeric_address(cryptography)
+    readable_address = cryptography.get_ex_readable_address(cryptography)
+
+    if utils.get_graph_tx_count() < 4:
         node.graph.make_transaction(
-        wallet.retrieve_addresses()[0],
-        wallet.retrieve_addresses()[0],
+        alphanumeric_address,
+        alphanumeric_address,
         69420000,
         cryptography.sign_tx(cryptography.get_public_key(cryptography), cryptography.get_private_key(cryptography), "Lixur"))
         node.refresh()
         print("[+] Genesis Wallet created")
-    else:
-        node.graph.make_transaction(
-            cryptography.get_alphanumeric_address(cryptography),
-            cryptography.get_alphanumeric_address(cryptography),
-            21000000, cryptography.sign_tx(cryptography.get_public_key(cryptography), cryptography.get_private_key(cryptography), "Lixur"))
+    elif utils.get_graph_tx_count() >= 4:
         node.refresh()
 
+    node.refresh()
     response = {
-        "alphanumeric_address": wallet.retrieve_addresses()[0],
-        "readable_address": wallet.retrieve_addresses()[1],
-        "balance": "{:,}".format(wallet.get_balance(wallet.retrieve_addresses()[0])) + " LXR"
+        "alphanumeric_address": alphanumeric_address,
+        "readable_address": readable_address,
+        "balance": "{:,}".format(utils.get_balance(alphanumeric_address)) + " LXR"
     }
 
     return jsonify(response), 201
