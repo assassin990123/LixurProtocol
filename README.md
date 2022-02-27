@@ -9,7 +9,7 @@ Lixur uses things such as DAGs and A.I smart contracts which enables fast, priva
 This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
 
 ### How to Contribute
-So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must.
+So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must. Our project management and our project checklist is avaiable here, it only takes a minute max to signup!
 <br> [Click here to join our Official Discord Server Link](https://discord.gg/HCRAQHKGeG)
 <br> [Click here to join our Official Jetbrains Space Group Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
 
