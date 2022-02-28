@@ -9,7 +9,7 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
 
-You may have struggles to install the required module PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0. This is crucial!
+You may have struggles to install the required module PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0. If this still doesn't work, you'll likely need to install this directly and manually from here: https://github.com/kpdemetriou/pqcrypto. This is a crucial module!
 
 ### How to Contribute
 
