@@ -56,7 +56,7 @@ class Util:
                 if address == graph_data[tx]["recipient"]:
                     balance += int(graph_data[tx]["amount"] * 2)
             else:
-                for tx in graph_data():
+                for tx in graph_data:
                     if address in graph_data[tx]['sender']:
                         balance -= int(graph_data[tx]["amount"])
                     if address == graph_data[tx]["recipient"]:
