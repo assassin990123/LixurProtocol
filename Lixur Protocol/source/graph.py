@@ -118,7 +118,7 @@ class Graph():
 
         else:
             self.failed_transactions.append(transaction)
-            raise RuntimeError(str({'[!] Invalid transaction. Attachment failed'}))
+            raise RuntimeError('[!] Invalid transaction. Attachment failed')
             return None
     def get_pending_transactions(self):
         return self.pending_transactions
@@ -156,14 +156,14 @@ class Graph():
                 transaction['amount'] = 0
         try:
             if transaction.signature == None or len(transaction.signature) != 64:
-                raise RunTimeError(str({'[!] Invalid signature'}))
+                raise RunTimeError('[!] Invalid signature')
                 return False
             elif len(transaction.signature) == 64:
                 if transaction.previous_hashes == None and transaction.index == 0 or len(transaction.previous_hashes) == 2:
                     return True
         except AttributeError:
             if transaction['signature'] == None or len(transaction['signature']) != 64:
-                raise RunTimeError(str({'[!] Invalid signature'}))
+                raise RunTimeError('[!] Invalid signature')
                 return None
             elif len(transaction['signature']) == 64:
                 if transaction['previous_hashes'] == None and transaction['index'] == 0 or len(transaction['previous_hashes']) == 2:
@@ -244,5 +244,5 @@ class Graph():
                         return self.attach_transaction(new_transaction, confirmed_transactions)
                 elif self.does_address_exist(recipient_public_key) == False:
                     raise LookupError("[!] Recipient address does not exist, please refresh the page and try again.")
-        raise RunTimeError({'[-] Transaction Failed...'})
+        raise RunTimeError('[-] Transaction Failed...')
         return {'[-] Transaction Failed...'}
