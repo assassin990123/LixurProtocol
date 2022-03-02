@@ -43,22 +43,21 @@ class Util:
             return len(graph_data.keys())
         except FileNotFoundError:
             print("Graph not found.")
-    def get_balance(self, address):
-        balance = 0
+    def get_appearances(self, address):
         appearances = 0
         graph_data = self.get_graph()
         for tx in graph_data:
             if address == graph_data[tx]['sender'] or address == graph_data[tx]['recipient']:
                 appearances += 1
-            if address == graph_data[tx]['sender'] and graph_data[tx]['recipient'] and appearances == 1 or 2:
-                if address in graph_data[tx]['sender']:
-                    balance -= int(graph_data[tx]["amount"])
-                if address == graph_data[tx]["recipient"]:
-                    balance += int(graph_data[tx]["amount"] * 2)
-            else:
-                for tx in graph_data:
-                    if address in graph_data[tx]['sender']:
-                        balance -= int(graph_data[tx]["amount"])
-                    if address == graph_data[tx]["recipient"]:
-                        balance += int(graph_data[tx]["amount"])
+        return appearances
+    def get_balance(self, address):
+        balance = 0
+        graph_data = self.get_graph()
+        for tx in graph_data:
+            if graph_data[tx]['sender'] == address and graph_data[tx]['recipient'] == address:
+                balance += graph_data[tx]['amount']
+            if address == graph_data[tx]['sender']:
+                balance -= int(graph_data[tx]["amount"])
+            if address == graph_data[tx]["recipient"]:
+                balance += int(graph_data[tx]["amount"])
         return balance
