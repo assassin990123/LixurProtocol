@@ -31,6 +31,8 @@ So you want to contribute? Please, please join our Discord Server and our JetBra
 <br> [Click here to join our Official Discord Server Link](https://discord.gg/HCRAQHKGeG)
 <br> [Click here to join our Official Jetbrains Space Group Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
 
+You could also submit a pull request (fork the code first) and introduce yourself, why you're interested in this project and promise us you'll join the Jetbrains and the Discord Servers. We need to keep in touch with all of our developers.
+
 ### How to Run
 * To run a node, install the required packages ***(download requirements.txt)***, and run Flask ***(not in terminal!)***, and it should pop up with three genesis trasactions.
 * To add new transactions, head to: `127.0.0.1:5000/transactions/new`
