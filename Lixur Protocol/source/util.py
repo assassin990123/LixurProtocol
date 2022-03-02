@@ -21,14 +21,14 @@ class Util:
                 ks_hash = keystore_dict['hash']
                 return ks_cipher, ks_nonce, ks_tag, ks_hash
         except FileNotFoundError:
-            print("Keystore not found.")
+            raise FileNotFoundError("Keystore not found")
     def get_phrase(self):
         try:
             with open("source/phrase.txt", "r") as f:
                 user_input = f.read().replace(" ", "")
                 return user_input
         except FileNotFoundError:
-            print("Phrase not found.")
+            raise FileNotFoundError("Phrase not found.")
     def get_graph(self):
         try:
             filename = "database/graph.json"
@@ -36,13 +36,13 @@ class Util:
                 graph_data = dict(json.load(f))
             return graph_data
         except FileNotFoundError:
-            print("Graph not found.")
+            raise FileNotFoundError("Graph not found.")
     def get_graph_tx_count(self):
         try:
             graph_data = self.get_graph()
             return len(graph_data.keys())
         except FileNotFoundError:
-            print("Graph not found.")
+            raise FileNotFoundError("Graph not found.")
     def get_appearances(self, address):
         appearances = 0
         graph_data = self.get_graph()

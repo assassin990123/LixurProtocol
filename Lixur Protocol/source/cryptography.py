@@ -11,6 +11,7 @@ import os
 import hashlib
 from base64 import b64encode, b64decode
 from Crypto.Cipher import AES
+
 class KeyGen:
     def __init__(self):
         self.public_key, self.private_key = generate_keypair()  # Keys are in bytes
@@ -202,9 +203,13 @@ class KeyGen:
             ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
             ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
             ks_hash = keystore_dict['hash']
+        if not os.path.exists("source/lixur_keystore.txt"):
+            raise FileNotFoundError("Keystore not found!")
 
         with open("source/phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
+        if not os.path.exists("source/phrase.txt"):
+            raise FileNotFoundError("Phrase not found!")
 
         if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
@@ -224,9 +229,13 @@ class KeyGen:
             ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
             ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
             ks_hash = keystore_dict['hash']
+        if not os.path.exists("source/lixur_keystore.txt"):
+            raise FileNotFoundError("Keystore not found!")
 
         with open("source/phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
+        if not os.path.exists("source/phrase.txt"):
+            raise FileNotFoundError("Phrase not found!")
 
         if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
@@ -246,9 +255,13 @@ class KeyGen:
             ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
             ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
             ks_hash = keystore_dict['hash']
+        if not os.path.exists("source/lixur_keystore.txt"):
+            raise FileNotFoundError("Keystore not found!")
 
         with open("source/phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
+        if not os.path.exists("source/phrase.txt"):
+            raise FileNotFoundError("Phrase not found!")
 
         if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
@@ -267,9 +280,13 @@ class KeyGen:
             ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
             ks_tag = b64decode(keystore_dict['tag'].encode('utf-8'))
             ks_hash = keystore_dict['hash']
+        if not os.path.exists("source/lixur_keystore.txt"):
+            raise FileNotFoundError("Keystore not found!")
 
         with open("source/phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
+        if not os.path.exists("source/phrase.txt"):
+            raise FileNotFoundError("Phrase not found!")
 
         if hashlib.sha256(user_input.encode("utf-8")).hexdigest() == ks_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, ks_nonce)
