@@ -19,7 +19,7 @@ If you have previously installed the PQCrypto: Delete it completely off of your 
 C:\Users\(Your Windows Name)\AppData\Local\Programs\Python\Python37\Lib\site-packages
 3. Once copied and pasted there, restart your laptop and head to your text editor and it should hopefully work.
 
-If you get any errors installing Pyroute, update it using the following line `python -m pip install --upgrade --no-cache-dir --use-deprecated=legacy-resolver pyroute2`
+If you get any errors installing PyRoute, update it using the following line `python -m pip install --upgrade --no-cache-dir --use-deprecated=legacy-resolver pyroute2`
 
 Any questions, email me at naisukhy@gmail.com or submit the issue on the GitHub Repository
 
