@@ -14,5 +14,5 @@ Ideas:
     - Copy Nano where everyone has their own ledger.
 
 Bugs:
-    - There's a small chance only tw transactions will appear, probably due to an error appending the transaction to the ledger.
+    - There's a small chance only two transactions will appear, probably due to an error appending the transaction to the ledger.
 """
