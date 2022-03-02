@@ -6,7 +6,7 @@ Urgent Tasks:
     - Work on consensus.py and make the Enchanted Consensus Weighted and then add that logic to the is_valid_transaction() function in graph.py.
 
 Not Urgent Tasks:
-    - There's a small chance only tw transactions will appear, probably due to an error appending the transaction to the ledger.
+    - There's a small chance only two transactions will appear, probably due to an error appending the transaction to the ledger.
     - Focus on recruiting developers, this time search up open-sourced developers or open-source blockchain developers.
     - Add your JIT Compiler throughout the code, whether this would be RustPython or Numba (About a dozen hours at most, research as biggest time waster)
 
