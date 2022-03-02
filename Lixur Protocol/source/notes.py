@@ -8,7 +8,7 @@ Urgent Tasks:
 Not Urgent Tasks:
     - There's a small chance only two transactions will appear, probably due to an error appending the transaction to the ledger.
     - Focus on recruiting developers, this time search up open-sourced developers or open-source blockchain developers.
-    - Add your JIT Compiler throughout the code, whether this would be RustPython or Numba (About a dozen hours at most, research as biggest time waster)
+    - Add your JIT Compiler throughout the code
 
 Ideas:
     - Copy Nano where everyone has their own ledger.
