@@ -15,11 +15,9 @@ Installation Instructions for PQCrypto:
 
 If you have previously installed the PQCrypto: Delete it completely off of your hard drive completely, restart your laptop and continue with the instructions
 1. Make sure you have Python 3.7.0 and uninstall all other versions of Python! Link: https://www.python.org/downloads/release/python-370/
-2. Grab the two folders, and move them to the following directory for Windows (or Mac/Linux Equivalent): 
+2. [[Download this ZIP file here]](https://drive.google.com/file/d/1ODfv9U8Q3nPfR4sjdmYc0ECGPISlLOeW/view?usp=sharing) Grab the two folders, and move them to the following directory for Windows (or Mac/Linux Equivalent): 
 C:\Users\(Your Windows Name)\AppData\Local\Programs\Python\Python37\Lib\site-packages
 3. Once copied and pasted there, restart your laptop and head to your text editor and it should hopefully work.
-
-If you get any errors installing PyRoute, install and update it using the following line: `python -m pip install --upgrade --no-cache-dir --use-deprecated=legacy-resolver pyroute2`
 
 Any questions, email me at naisukhy@gmail.com or submit the issue on the GitHub Repository
 
