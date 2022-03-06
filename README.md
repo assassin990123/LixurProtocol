@@ -11,15 +11,17 @@ This project is by no means complete and may feature plenty of bugs, security ho
 
 You may have struggles to install the required module PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0 and manually install the package. 
 
-Installation Instructions for PQCrypto: 
+### Installation Instructions and Guide for PQCrypto: 
 
-Pre-requisite: Before installing requirements.txt, rmove PQCrypto from the requirements.txt file on your computer. 
+Pre-requisite: Before installing requirements.txt, remove PQCrypto from the requirements.txt file on your computer. 
 If you have previously installed the PQCrypto: Delete it completely off of your hard drive completely, restart your laptop and continue with the instructions
 
-1. Make sure you have Python 3.7.0 and uninstall all other versions of Python! Link: https://www.python.org/downloads/release/python-370/
+1. Make sure you have Python 3.7.0 and running that version for the project. Link: https://www.python.org/downloads/release/python-370/
 2. [[Download this ZIP file here]](https://drive.google.com/file/d/1ODfv9U8Q3nPfR4sjdmYc0ECGPISlLOeW/view?usp=sharing) Grab the two folders, extract it and move them to the following directory for Windows (or Mac/Linux Equivalent): 
 C:\Users\(Your Windows Name)\AppData\Local\Programs\Python\Python37\Lib\site-packages
-3. Once copied and pasted there, restart your laptop and head to your text editor and it should hopefully work.
+3. Once copied and pasted there, restart your laptop and head to your text editor.
+4. Install requirements.txt
+5. It should be working.
 
 Any questions, email me at naisukhy@gmail.com or submit the issue on the GitHub Repository
 
