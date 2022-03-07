@@ -19,6 +19,7 @@ from source.cryptography import KeyGen as keygen
 
 app = Flask(__name__)
 cryptography = keygen()
+node = Node()
 
 @app.route('/node', methods=['GET', 'POST'])
 def register_new_node():
@@ -37,7 +38,7 @@ def new_transaction():
         response = node.graph.make_transaction(
             alphanumeric_address,
             input("Enter the recipient's address: "),
-            int(input("Enter the amount of LXR to send: ").replace(",", "")),
+            float(input("Enter the amount of LXR to send: ").replace(",", "")),
             cryptography.sign_tx(public_key, private_key, "Lixur"))
     else:
         return jsonify("[-] Private key or public key is not found "), 400

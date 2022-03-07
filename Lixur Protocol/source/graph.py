@@ -8,6 +8,8 @@ import binascii
 import hashlib
 from uuid import uuid4
 from source.cryptography import KeyGen as keygen
+import source.consensus as cs
+
 cryptography = keygen()
 
 class Keys:
@@ -96,7 +98,9 @@ class Graph():
         self.failed_transactions = []
         self.pending_transactions.append(transaction)
 
-        if self.is_valid_transaction(transaction):
+        is_valid = self.is_valid_transaction(transaction)
+
+        if is_valid == True:
             utils = Util()
             x = utils.str_join([
                 transaction.timestamp,
@@ -120,6 +124,7 @@ class Graph():
             self.failed_transactions.append(transaction)
             raise RuntimeError('[!] Invalid transaction. Attachment failed')
             return None
+
     def get_pending_transactions(self):
         return self.pending_transactions
     def get_failed_transactions(self):
@@ -145,7 +150,6 @@ class Graph():
                     pass
                 elif transaction['amount'] > 0:
                     raise LookupError("[!] Invalid transaction. You can not send cryptocurrency to a non-existent address")
-                    return False
             elif transaction['recipient_public_key'] != None:
                 pass
         try:
@@ -157,32 +161,32 @@ class Graph():
         try:
             if transaction.signature == None or len(transaction.signature) != 64:
                 raise RuntimeError('[!] Invalid signature')
-                return False
             elif len(transaction.signature) == 64:
                 if transaction.previous_hashes == None and transaction.index == 0 or len(transaction.previous_hashes) == 2:
-                    return True
+                    pass
         except AttributeError:
             if transaction['signature'] == None or len(transaction['signature']) != 64:
                 raise RuntimeError('[!] Invalid signature')
-                return None
             elif len(transaction['signature']) == 64:
                 if transaction['previous_hashes'] == None and transaction['index'] == 0 or len(transaction['previous_hashes']) == 2:
-                    return True
+                    pass
 
-        '''
-        TODO: implement transaction validation logic.
+        tx_num = Util.get_graph_tx_count(Util)
 
-        We first need to make sure necessary things are appended such as a valid signature, and confirmed transactions.
+        if tx_num <= 5: # Genesis transactions get added to the graph quicker w/o consensus
+            return True
 
-        We then to check if the sending wallet has enough amount if the transaction isn't void. Look through the ledger for this or we can
-        use the get_balance() function to instantly determine the balance of a given sending address.
+        else:
+            consensus_result = cs.run_consensus()
 
-        After transaction validation has been completed, consensus has to be ran. This is where we need to implement the consensus algorithm.
+            if consensus_result == True:
+                print("[!] Consensus reached")
+                return True
+            else:
+                if consensus_result == False:
+                    return False
+                    raise RuntimeError('[!] Invalid transaction. Consensus failed.')
 
-        If anywhere we encounter an error, we cancel and revoke the transaction and say it's invalid and list why.
-        If there is no errors, we append the transaction to the ledger.
-        '''
-        return True
     def confirm_transactions(self):
         tip_one, tip_two = self.select_tips()
         self.is_valid_transaction(tip_one)

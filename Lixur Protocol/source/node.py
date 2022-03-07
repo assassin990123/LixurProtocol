@@ -7,6 +7,7 @@ import time
 import hashlib
 import sys
 import time
+from numba import jit
 
 class Node:
     def __init__(self, *args):
@@ -19,7 +20,6 @@ class Node:
         if "0" in str(exit_code):
             print("Ping successful!")
             self.ping = True
-            duration_s = end_time - start_time
         else:
             print("Ping unsuccessful or unsatisfactory...")
             print(f"The error code is {exit_code}")
