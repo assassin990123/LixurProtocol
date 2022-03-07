@@ -1,5 +1,12 @@
 import hashlib
 from uuid import uuid4
+from numpy.random import default_rng
+from numpy import abs, array, zeros
+from datetime import datetime, timedelta
+from typing import Tuple, TextIO
+import argparse
+import numpy
+import sys
 import json
 
 class Util:
@@ -41,6 +48,9 @@ class Util:
         try:
             graph_data = self.get_graph()
             return len(graph_data.keys())
+        except TypeError:
+            graph_data = self.get_graph(self)
+            return len(graph_data.keys())
         except FileNotFoundError:
             raise FileNotFoundError("Graph not found.")
     def get_appearances(self, address):
@@ -55,9 +65,10 @@ class Util:
         graph_data = self.get_graph()
         for tx in graph_data:
             if graph_data[tx]['sender'] == address and graph_data[tx]['recipient'] == address:
-                balance += graph_data[tx]['amount']
+                balance += float(graph_data[tx]['amount'])
             if address == graph_data[tx]['sender']:
-                balance -= int(graph_data[tx]["amount"])
+                balance -= float(graph_data[tx]["amount"])
             if address == graph_data[tx]["recipient"]:
-                balance += int(graph_data[tx]["amount"])
+                balance += float(graph_data[tx]["amount"])
+        balance = float(balance)
         return balance
