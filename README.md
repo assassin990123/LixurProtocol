@@ -13,7 +13,7 @@ You may have struggles to install the required module PQCrypto, it's likely you'
 
 ### Installation Instructions and Guide for PQCrypto: 
 
-Pre-requisite: Before installing requirements.txt, remove PQCrypto from the requirements.txt file on your computer. 
+Pre-requisite: Before installing `requirements.txt`, remove `pqcrypto==0.1.3` from the requirements.txt file on your computer. 
 If you have previously installed the PQCrypto: Delete it completely off of your hard drive completely, restart your laptop and continue with the instructions
 
 1. Make sure you have Python 3.7.0 and running that version for the project. Link: https://www.python.org/downloads/release/python-370/
