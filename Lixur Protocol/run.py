@@ -1,14 +1,6 @@
-import hashlib
 from flask import Flask, jsonify, request
-from flask import send_file
-import json
-import socket
-import networkx as nx
 from flask_ngrok import run_with_ngrok as run
-import os
-import sys
-import datetime
-import time
+import json
 
 # imported classes
 from source.node import Node
@@ -21,11 +13,13 @@ app = Flask(__name__)
 cryptography = keygen()
 node = Node()
 
+
 @app.route('/node', methods=['GET', 'POST'])
 def register_new_node():
     node.register_neighbours(ip_address, port)
     response = node.check_node_status()
     return jsonify(response), 201
+
 
 @app.route('/transactions/new', methods=['GET', 'POST'])
 def new_transaction():
@@ -70,6 +64,7 @@ def address_retrieval():
 
     return jsonify(response), 201
 
+
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
     graph = Graph()
@@ -93,20 +88,22 @@ def stats():
         failed_transactions = None
 
     response = {
-    "Successful Transaction Count": utils.get_graph_tx_count(),
-    "Total Unique Addresses" : number_of_unique_addresses,
-    "Total Supply of LXR" : total_amount_of_lxr,
-    "Pending Transaction Count": len(graph.get_pending_transactions()),
-    "Failed Transaction Count": failed_transactions
+        "Successful Transaction Count": utils.get_graph_tx_count(),
+        "Total Unique Addresses": number_of_unique_addresses,
+        "Total Supply of LXR": total_amount_of_lxr,
+        "Pending Transaction Count": len(graph.get_pending_transactions()),
+        "Failed Transaction Count": failed_transactions
     }
 
     return jsonify(response), 201
+
 
 @app.route('/', methods=['GET', 'POST'])
 def show_DAG():
     serializable_format = node.getGraphAsJSONdict()
     node.refresh()
     return jsonify(serializable_format), 201
+
 
 if __name__ == '__main__':
     # print("Loading Lixur Testnet Beta Version 1.0.0")
