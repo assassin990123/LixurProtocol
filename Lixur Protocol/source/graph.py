@@ -1,4 +1,3 @@
-import networkx as nx
 from source.util import Util
 from random import randint
 from collections import OrderedDict
@@ -6,7 +5,6 @@ import time
 from datetime import datetime
 import binascii
 import hashlib
-from uuid import uuid4
 from source.cryptography import KeyGen as keygen
 import source.consensus as cs
 
