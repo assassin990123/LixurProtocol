@@ -2,7 +2,7 @@ import random
 from collections import Counter
 from numpy import array as nparray
 
-# Consensus takes an average of 2.736 seconds to reach, and this is with a node count of 10,000.
+# Consensus takes an average of 2.736 seconds to reach, and this is with a node count of 10,000. Also, 
 
 consensus_values = nparray([True, False])
 max_rounds = 25
