@@ -85,6 +85,8 @@ class Node:
         alive_nodes = []
         dead_nodes = []
         for i in self.neighbours["neighbours"]:
+            self.alive_list = []
+            self.dead_list = []
             if self.ping is True:
                 alive_nodes.append(i["ip"])
                 self.alive_count = len(alive_nodes)

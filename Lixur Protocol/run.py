@@ -12,11 +12,12 @@ from source.cryptography import KeyGen as keygen
 app = Flask(__name__)
 cryptography = keygen()
 node = Node()
+utils = Util()
 
 
 @app.route('/node', methods=['GET', 'POST'])
 def register_new_node():
-    node.register_neighbours(ip_address, port)
+    node.register_neighbours('127.0.0.1', 5000)
     response = node.check_node_status()
     return jsonify(response), 201
 
