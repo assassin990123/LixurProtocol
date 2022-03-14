@@ -78,10 +78,6 @@ def stats():
     unique_addresses.remove("None")
     unique_addresses.pop()
     number_of_unique_addresses = len(unique_addresses)
-    total_amount_of_lxr = 0
-    for key in ledger:
-        total_amount_of_lxr += ledger[key]['amount']
-    total_amount_of_lxr = "{:,}".format(total_amount_of_lxr) + " LXR"
 
     try:
         failed_transactions = len(graph.get_failed_transactions())
@@ -91,7 +87,6 @@ def stats():
     response = {
         "Successful Transaction Count": utils.get_graph_tx_count(),
         "Total Unique Addresses": number_of_unique_addresses,
-        "Total Supply of LXR": total_amount_of_lxr,
         "Pending Transaction Count": len(graph.get_pending_transactions()),
         "Failed Transaction Count": failed_transactions
     }
