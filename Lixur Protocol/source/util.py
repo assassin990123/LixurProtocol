@@ -1,8 +1,11 @@
+from base64 import b64decode
 import hashlib
 from uuid import uuid4
 import sys
 import json
-from base64 import b64decode
+import random
+import socket
+import os
 
 class Util:
     def __init__(self, *args):
@@ -15,7 +18,8 @@ class Util:
         return ''.join(map(str, args))
     def get_keystore(self):
         try:
-            with open("source/lixur_keystore.txt", "r") as f:
+            filename = "lixur_keystore.txt"
+            with open(filename, "r") as f:
                 keystore_dict = eval(f.read())
                 ks_cipher = b64decode(keystore_dict['cipher_text'].encode('utf-8'))
                 ks_nonce = b64decode(keystore_dict['nonce'].encode('utf-8'))
@@ -26,14 +30,15 @@ class Util:
             raise FileNotFoundError("Keystore not found")
     def get_phrase(self):
         try:
-            with open("source/phrase.txt", "r") as f:
+            filename = "source/phrase.txt"
+            with open(filename, "r") as f:
                 user_input = f.read().replace(" ", "")
                 return user_input
         except FileNotFoundError:
             raise FileNotFoundError("Phrase not found.")
     def get_graph(self):
         try:
-            filename = "database/graph.json"
+            filename = "graph.json"
             with open(filename, 'r') as f:
                 graph_data = dict(json.load(f))
             return graph_data

@@ -1,19 +1,11 @@
 """
 Estimated Testnet Beta Release: March 2022 (v0.1.0)
-----------------------------------------------------------------------------------------------------------------------------------------------------------
-Urgent Tasks:
-    - We need to establish a peer to peer framework
-    - Work on consensus.py
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+What we need to implement for the Testnet Beta Release:
+1. People should be able to join the network with their IPs and ports.
+2. People can send and receive JSON files to each other.
 
-Not Urgent Tasks:
-    - There's a small chance only two transactions will appear, probably due to an error appending the transaction to the ledger.
-    - Focus on recruiting developers, this time search up open-sourced developers or open-source blockchain developers.
-    - Add your JIT Compiler throughout the code.
+I might want to simplify the requirements.txt
 
-Bugs:
-    - There's a small chance only two transactions will appear, probably due to an error appending the transaction to the ledger.
-
-Tasks:
-    - Work on consensus.py
-    - Recruit developers
+Also, we need to prevent users from using my wallet and my passphrase as well
 """
