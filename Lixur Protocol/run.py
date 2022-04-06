@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import json
+import random
 
 # imported classes
 from source.node import Node
@@ -13,16 +14,6 @@ cryptography = keygen()
 node = Node()
 util = Util()
 
-host = util.get_host_port_pair()[0]
-port = util.get_host_port_pair()[1]
-session_id = util.get_host_port_pair()[2]
-
-@app.route('/node', methods=['GET', 'POST'])
-def register_new_node():
-    node.register_neighbours(host, port)
-    response = node.check_node_status()
-    return jsonify(response), 201
-
 
 @app.route('/transactions/new', methods=['GET', 'POST'])
 def new_transaction():
@@ -30,7 +21,7 @@ def new_transaction():
     public_key = cryptography.get_ex_public_key(cryptography)
     alphanumeric_address = cryptography.get_ex_alphanumeric_address(cryptography)
 
-    if private_key and public_key != None:
+    if private_key and public_key is not None:
         print("You're about to make a transaction...")
         response = node.graph.make_transaction(
             alphanumeric_address,
@@ -46,24 +37,27 @@ def new_transaction():
 
 @app.route('/wallet', methods=['GET', 'POST'])
 def address_retrieval():
+    wallet = Wallet()
+    wallet.access_wallet()
+
     alphanumeric_address = cryptography.get_ex_alphanumeric_address(cryptography)
     readable_address = cryptography.get_ex_readable_address(cryptography)
 
-    if utils.get_graph_tx_count() < 4:
+    if util.get_graph_tx_count() < 4:
         node.graph.make_transaction(
             alphanumeric_address,
             alphanumeric_address,
             69420000,
             cryptography.sign_tx(cryptography.get_public_key(cryptography), cryptography.get_private_key(cryptography), "Lixur"))
         node.refresh()
-    elif utils.get_graph_tx_count() >= 4:
+    elif util.get_graph_tx_count() >= 4:
         pass
     node.refresh()
 
     response = {
         "alphanumeric_address": alphanumeric_address,
         "readable_address": readable_address,
-        "balance": "{:,}".format(utils.get_balance(alphanumeric_address)) + " LXR"
+        "balance": "{:,}".format(util.get_balance(alphanumeric_address)) + " LXR"
     }
 
     return jsonify(response), 201
@@ -72,7 +66,7 @@ def address_retrieval():
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
     graph = Graph()
-    ledger = utils.get_graph()
+    ledger = util.get_graph()
     unique_addresses = []
     for key in ledger:
         unique_addresses.append(ledger[key]['sender'])
@@ -92,7 +86,7 @@ def stats():
         failed_transactions = None
 
     response = {
-        "Successful Transaction Count": utils.get_graph_tx_count(),
+        "Successful Transaction Count": util.get_graph_tx_count(),
         "Total Unique Addresses": number_of_unique_addresses,
         "Total Supply of LXR": total_amount_of_lxr,
         "Pending Transaction Count": len(graph.get_pending_transactions()),
@@ -110,6 +104,8 @@ def show_DAG():
 
 
 if __name__ == '__main__':
-    # print("Loading Lixur Testnet Beta Version 1.0.0")
-    util = Util()
-    app.run(host=host, port=int(port))
+    ip_address = "127.0.0.1"
+    port = random.randint(1024, 65535)
+    util.thread(node.run_socket())
+    # Connect to peers, once connected to all of them, start the blockchain
+    util.thread(app.run(host=ip_address, port=int(port)))
