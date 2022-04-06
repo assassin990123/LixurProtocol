@@ -1,15 +1,25 @@
 import random
 from collections import Counter
-from numpy import array as nparray
+from source.util import Util as util
 
-# Consensus takes an average of 2.736 seconds to reach, and this is with a node count of 10,000. Also, 
+# Consensus takes an average of 2.736 seconds to reach, and this is with a node count of 10,000. Also, change the peer connections to be the
+# length of all of the peers they know of that are online and connected to.
 
-consensus_values = nparray([True, False])
+# So for consensus, what we would need is to have independent nodes on the network be able to have their own vote, not simulated. They would then cast
+# their vote to the council and start querying, this would happen between the nodes in a virtual round-table until everyone has achieved consensus.
+
+u = util()
+
+consensus_values = [True, False]
 max_rounds = 25
+quorum_min = 2
+peer_list = u.get_peer_list()
+peer_count = len(u.get_peer_list())
+peer_connections = 4  # This is the number of peers that each peer knows of that are online and connected to.
+# int((peer_count-1)/2 * peer_count) / 4
 
-class Node:
-    def __init__(self, id, value=None, peer_connections=9, rounds=max_rounds, peers=[], alpha=0.5):
-        self.id = id
+class Consensus:
+    def __init__(self, value=None, peer_connections=peer_connections, rounds=max_rounds, peers=peer_list, alpha=0.5):
         self.value = value
         self.peer_connections = peer_connections
         self.rounds = rounds
@@ -37,8 +47,10 @@ class Node:
         self.value = self.slush_result()
         return self.value
 
-all_nodes = [Node(x, random.choice(consensus_values)) for x in range(10000)]
+
+all_nodes = [Consensus(x, random.choice(consensus_values)) for x in range(peer_count)]  # Change this to reflect the number of peers.
 node_count = len(all_nodes)
+
 
 def see_split():
     value_counter = {}
@@ -47,6 +59,7 @@ def see_split():
     for node in all_nodes:
         value_counter[node.value] += 1
     return value_counter
+
 
 def run_slush_round():
     for node in all_nodes:
@@ -68,6 +81,5 @@ def run_consensus():
         run_slush_round()
         consensus = consensus_reached()
         if consensus == True:
+            return True
             break
-
-

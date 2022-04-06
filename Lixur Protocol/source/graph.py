@@ -69,23 +69,26 @@ class Graph():
         genesis_private_key = keys.genesis_private_key
         genesis_public_key = keys.genesis_public_key
 
+        # You may want to make several thousands on the Mainnet for security from potential high weight attacks.
+
         gen_tx_one = tx(genesis_address, genesis_address, 0,
-                        keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis Transaction 1"),
+                        keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis"),
                         index=self.count_tx_number())
         self.update_cumulative_weights(gen_tx_one, ["None"])
         gen_tx_key = self.attach_transaction(gen_tx_one, ["None"])
 
         gen_tx_two = tx(genesis_address, None, 0,
-                        keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis Transaction 2"),
+                        keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis"),
                         index=self.count_tx_number())
         self.update_cumulative_weights(gen_tx_two, [gen_tx_key])
         self.attach_transaction(gen_tx_two, [gen_tx_key])
 
         gen_tx_three = tx(genesis_address, None, 0,
-                          keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis Transaction 3"),
+                          keygen.sign_tx(genesis_public_key, genesis_private_key, "Genesis"),
                           index=self.count_tx_number())
         self.update_cumulative_weights(gen_tx_three, [gen_tx_key])
         self.attach_transaction(gen_tx_three, [gen_tx_key])
+
     def count_tx_number(self):
         tx_number = 0
         for x in self.graph:
@@ -171,25 +174,34 @@ class Graph():
 
         tx_num = Util.get_graph_tx_count(Util)
 
-        if tx_num <= 5: # Genesis transactions get added to the graph quicker w/o consensus
-            return True
+        return True
 
-        else:
-            consensus_result = cs.run_consensus()
-
-            if consensus_result == True:
-                print("[!] Consensus reached")
-                return True
-            else:
-                if consensus_result == False:
-                    return False
-                    raise RuntimeError('[!] Invalid transaction. Consensus failed.')
+        # if tx_num <= 3: # Genesis transactions get added to the graph quicker w/o consensus
+        #     return True
+        #
+        # else:
+        #     self.consensus_result = cs.run_consensus()
+        #
+        #     if self.consensus_result == True:
+        #         print("[!] Consensus reached")
+        #         from source.node import Node as n
+        #         n = n()
+        #         util = Util()
+        #         n.connect_to_all()
+        #         n.send(util.get_graph())
+        #         return True
+        #
+        #     else:
+        #         if consensus_result == False:
+        #             return False
+        #             raise RuntimeError('[!] Transaction could not be attached because consensus failed to be reached.')
 
     def confirm_transactions(self):
         tip_one, tip_two = self.select_tips()
         self.is_valid_transaction(tip_one)
         self.is_valid_transaction(tip_two)
         return tip_one['key'], tip_two['key']
+
     def select_tips(self):
         available_transactions = []
         selected_transactions = []
@@ -208,6 +220,7 @@ class Graph():
                 while selected_transactions[0] == selected_transactions[1]:
                     selected_transactions[1] = available_transactions[randint(0, len(available_transactions) - 1)]
         return selected_transactions[0], selected_transactions[1]
+
     def valid_proof(self, previous_hashes, signature, timestamp, nonce):
         guess = (str(previous_hashes) + str(signature) + str(timestamp) + str(nonce)).encode('utf-8')
         h = hashlib.new('sha256')

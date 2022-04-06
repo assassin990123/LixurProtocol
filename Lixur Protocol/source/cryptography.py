@@ -1,4 +1,4 @@
-# Lixur uses the "Falcon 1024" post quantum, lattice-based cryptography.
+# Lixur uses the "Falcon 1024" post-quantum, lattice-based cryptography.
 # Sign function signs the private keys, usage -> sign(private_key, message)
 # Verify function verifies the signature, usage -> verify(public_key, message, signature)
 # Generate keypair function generates the public and private keys, usage -> generate_keypair()

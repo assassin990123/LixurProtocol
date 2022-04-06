@@ -1,11 +1,6 @@
 """
-Estimated Testnet Beta Release: March 2022 (v0.1.0)
+Estimated Testnet Beta Release: Spring 2022 (v0.1.0)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
-What we need to implement for the Testnet Beta Release:
-1. People should be able to join the network with their IPs and ports.
-2. People can send and receive JSON files to each other.
-
-I might want to simplify the requirements.txt
-
-Also, we need to prevent users from using my wallet and my passphrase as well
+1. Solve the potential dilemma of people sending fake graphs using consensus (only an issue if not all online nodes participate in consensus).
+2. Assessing who is online and who is offline and updating the list accordingly.
 """

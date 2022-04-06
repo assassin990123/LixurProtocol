@@ -1,134 +1,181 @@
-from source.util import Util
-from source.graph import Graph
-from collections import OrderedDict
+import socket
+import random
+import hashlib
+import threading
 import json
 import os
-import time
-import hashlib
-import sys
-import time
+import subprocess as sp
+
+from source.util import Util
+from source.graph import Graph
+from source.cloud import Cloud
+
+util = Util()
+cloud = Cloud()
+
+# Do not forget to add IPv6 Functionality!
 
 class Node:
-    def __init__(self, *args):
-        self.neighbours = {"neighbours": []}
+    def __init__(self):
         self.graph = Graph()
-    def send_ping(self, ip_address):
-        # This is for Windows only, won't work on MacOS or Linux until the code gets upgraded :(
+        self.info = []
 
-        exit_code = os.system(f"ping {ip_address}")
-        if "0" in str(exit_code):
-            print("Ping successful!")
-            self.ping = True
-        else:
-            print("Ping unsuccessful or unsatisfactory...")
-            print(f"The error code is {exit_code}")
-            self.ping = False
-        return self.ping
-    def register_neighbours(self, ip_address, port):
-        self.ip_address = ip_address
-        self.port = port
-        length = len(self.neighbours["neighbours"])
-        if length == 0:
-            self.neighbours["neighbours"].append({"ip": ip_address, "port": port})
-            print("[+] Neighbour added: %s:%d" % (ip_address, port))
-            self.is_genesis_node = True
-            self.neighbours["neighbours"][0].update({"genesis_node": self.is_genesis_node})
-            print("[+] Registering %d neighbour..." % len(self.neighbours["neighbours"]))
-            print("[+] Total nodes on the network: %d" % len(self.neighbours["neighbours"]))
-            self.sync_neighbour()
-        elif length > 0:
-            for i in self.neighbours["neighbours"]:
-                if i["ip"] == ip_address and i["port"] == port:
-                    print("[+] This node is already registered...")
-                    break
-                elif i["ip"] != ip_address and i["port"] != port:
-                    self.neighbours["neighbours"].append({"ip": ip_address, "port": port})
-                    self.ip = ip_address
-                    self.port = port
+    def server_functionality(self):
 
-                    self.is_genesis_node = False
-                    self.neighbours["neighbours"][0].update({"genesis_node": self.is_genesis_node})
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = ('127.0.0.1', random.randint(1024, 65000))
+        print('Server starting up, your server IP: {}, Port: {}\n'.format(*server_address))
+        sock.bind(server_address)
 
-                    listofneighbours = self.neighbours["neighbours"]
-                    print("[+] Registering %d neighbours..." % len(listofneighbours))
+        self.s_ip = server_address[0]
+        self.s_port = server_address[1]
+        self.add_to_info(self.s_ip, self.s_port)
 
-                    for n in listofneighbours:
-                        # for each new neighbour, add tuples like (("ip": "192.168.1.2"), ("port": 8080))
-                        self.neighbours.update(tuple(n.items()))
-                    print("[+] Total nodes on the network: %d" % len(self.neighbours["neighbours"]))
+        sock.listen()
+        x = []
 
-                    self.sync_neighbour()
+        while True:
+            print('Waiting for a connection...')
+            connection, client_address = sock.accept()
+            print(f"{client_address} has connected.")
+
+            while True:
+                data = connection.recv(1024).decode()
+                filename = "source/graph.json"
+                stop_msg = "~~~"
+                if data:
+                    print('Server received: {!r}'.format(data))
+
+                    if "sender" or "amount" or "amount" or "signature" or "timestamp" or "weight" or "nonce" or "index" or "edges" in data:
+                        if data != stop_msg:
+                            x.append(data)
+
+                    if stop_msg in data or data == stop_msg:
+                        asm_graph = util.assemble_graph(x).replace(stop_msg, '')
+                        print("Entire graph has been received. Adding to graph...")
+                        with open(filename, "w") as u:
+                            u.truncate()
+                            u.write(asm_graph)
+                            u.close()
+                            x.clear()
+                        self.refresh()
+                        print("Graph refreshed!")
+
+                    elif data == "True" or data == "False":
+                        vote = eval(data)
                 else:
-                    print("[?] Weird input, neighbour not added")
+                    pass
 
-        if len(self.neighbours["neighbours"]) == 1:
-            return {'msg': '%d' % len(self.neighbours["neighbours"]) + ' node added as neighbour'}
-        elif len(self.neighbours["neighbours"]) > 1:
-            return {'msg': '%d' % len(self.neighbours["neighbours"]) + ' nodes added as neighbours'}
-        elif len(self.neighbours["neighbours"]) == 0:
-            return {'msg': 'No neighbours added'}
-    def sync_neighbour(self):
-        # TODO: for each ip:port pair in the self.neighbours:
-        # Check if they are up/alive (maybe ping first)
-        # if they are up, ask them for their Graph.
-        # My note: Sync with first node for each new node?
-        print("[+] Syncing with neighbours...")
-        for i in self.neighbours["neighbours"]:
-            print("[+] Syncing with %s:%d" % (i["ip"], i["port"]))
-            ip_address_of_self = i["ip"]
-            self.send_ping(ip_address_of_self)
-            if self.ping is True:
-                Graph = self.getGraphAsJSONdict()
-            elif self.ping is False:
+    def client_functionality(self):
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        complete = None
+        print("Node started!, downloading the peer list...")
+        cloud.download_peer_list()
+        print("Peer list downloaded!")
+        print("Adding you to the peer list...")
+        cloud.add_self_to_peer_list()
+        print("You have been added to the peer list!")
+        print("Connecting to peers...")
+        complete = True
+
+        if complete:
+            if len(self.get_peers()) >= 6:
+                pl = self.get_peers()
+                for x in pl:
+                    try:
+                        sock.connect((x[0], x[1]))
+                        print(f"Connected to {sock.getpeername()}")
+                    except OSError:
+                        pass
+
+        while 1:
+            try:
+                data = sock.recv(1024).decode()
+            except OSError:
                 pass
 
-        alive_nodes = []
-        dead_nodes = []
-        for i in self.neighbours["neighbours"]:
-            if self.ping is True:
-                alive_nodes.append(i["ip"])
-                self.alive_count = len(alive_nodes)
-                self.alive_list = alive_nodes
-                self.active = True
-                self.active_prompt = "Active"
-            elif self.ping is False:
-                dead_nodes.append(i["ip"])
-                self.dead_count = len(dead_nodes)
-                self.dead_list = dead_nodes
-                self.active = False
-                self.active_prompt = "Inactive"
-            if len(self.neighbours["neighbours"]) == 1 and self.ping is False: # AKA if the only node in the network is dead
-                self.alive_count = 0
-                self.alive_list = alive_nodes
-                self.active = False
-    def check_node_status(self):
-        self.sync_neighbour()
-        print("[+] Checking node and network status...")
-        status_dict = {"[+] Message": f"You've successfully connected to the network, your IP address and port are: {self.ip_address}:{self.port}",
-                   "Amount of Total Nodes On The Network ": len(self.neighbours["neighbours"]),
-                   "List of Nodes On The Network ": self.neighbours["neighbours"],
-                   "Is This Node The Genesis": self.neighbours["neighbours"][0]["genesis_node"],
-                   "Amount of Alive Nodes On The Network ": len(self.alive_list),
-                   "List of Alive Nodes On The Network ": self.alive_list,
-                   "Amount of Dead Nodes On The Network ": len(self.dead_list),
-                   "List of Dead Nodes On The Network ": self.dead_list,
-                   "Percentage of Active Nodes On The Network ":
-                        str(float(len(self.alive_list) / round(len(self.alive_list) + len(self.dead_list))) * 100) + " %",
-                   "Percentage of Inactive Nodes On The Network ":
-                        str(float(len(self.dead_list) / round(len(self.alive_list) + len(self.dead_list))) * 100) + " %",
-                   "Node Status ": self.active_prompt,
-                   "Number of Transactions on Lixur": self.graph.count_tx_number()},
+            try:
+                if type(data) == bool:
+                    pass
+            except UnboundLocalError:
+                pass
 
-        return status_dict
+            try:
+                if data == "" or data == None:
+                    pass
+            except UnboundLocalError:
+                pass
+
+            else:
+                print('Client received:{!r}'.format(data))
+
+        mode = None
+        if mode == "G":
+            self.send_graph = True
+        else:
+            self.send_graph = False
+        if mode == "S":
+            self.send_vote = True
+        else:
+            self.send_vote = False
+
+        if self.send_graph == True:
+            try:
+                filename = "source/graph.json"
+                with open(filename, "r") as f:
+                    while True:
+                        bytes_read = f.read()
+                        sock.sendall(util.encode(bytes_read))
+                        sock.sendall(util.encode("~~~"))
+                        print("Everything sent successfully!")
+                        break
+
+            except FileNotFoundError:
+                raise FileNotFoundError("Graph not found. Please resolve this issue before sending.")
+
+        elif self.send_vote == True:
+            self.value = None
+            consensus_values = [True, False]
+            self.value = random.choice(consensus_values)
+            sock.send(util.encode(self.value))
+            print(f"Vote sent: {self.value}")
+
+    def add_to_info(self, s_ip, s_port):
+        filename = "source/info.json"
+        sending_ip_server = s_ip
+        sending_port_server = s_port
+        session_id = util.hash(str(s_ip + str(s_port)))[:20]
+        address = [sending_ip_server, sending_port_server, session_id]
+        with open(filename, 'w') as f:
+            json.dump(address, f)
+
+    def get_info(self):
+        with open("source/info.json", 'r') as f:
+            data = eval(f.read())
+        return data
+
+    def get_peers(self):
+        return util.get_peer_list()
+
+    def run_socket(self):
+        s_thread = threading.Thread(target=self.server_functionality)
+        c_thread = threading.Thread(target=self.client_functionality)
+        s_thread.start()
+        c_thread.start()
+
     def writeGraphToJSONfile(self):
-        filename = "database/graph.json"
+        filename = "source/graph.json"
         with open(filename, 'w') as f:
             json.dump(self.getGraphAsJSONdict(), f)
+
     def readGraphFromJSONfile(self):
-        filename = "database/graph.json"
+        filename = "source/graph.json"
         with open(filename, 'r') as f:
             graphJSON = json.load(f)
         return graphJSON
+
     def getGraphAsJSONdict(self):
         serializable_format = ({})
         for (k, v) in self.graph.graph.items():
@@ -136,5 +183,6 @@ class Node:
             sort_by = "index"  # Options are: "index", "amount", "own_weight" or "timestamp"
         serializable_format = sorted(serializable_format.items(), key=lambda x: x[1][sort_by], reverse=True)
         return serializable_format
+
     def refresh(self):
         self.writeGraphToJSONfile()

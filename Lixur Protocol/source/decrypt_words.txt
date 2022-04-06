@@ -1655,7 +1655,7 @@ perk
 perm
 perp
 pert
-perv
+peru
 peso
 pest
 pets
