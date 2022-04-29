@@ -18,10 +18,10 @@ class Node:
         self.peer_count = len(self.peers)
         self.query_num = 3
         self.your_id = None
-        self.server_address = ('127.0.0.1', random.randint(1024, 65000))  # Insert the server's IP here.
+        self.port = random.randint(1024, 65000)
     def server_functionality(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(self.server_address)
+        sock.bind(('0.0.0.0',self.port))
         sock.listen()
 
         while 1:
