@@ -1,6 +1,4 @@
-from flask import Flask, jsonify, request
-import json
-import random
+from flask import Flask, jsonify
 
 # imported classes
 from node import Node

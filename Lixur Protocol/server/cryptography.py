@@ -5,12 +5,8 @@
 from pqcrypto.sign.falcon_1024 import verify, generate_keypair, sign
 from hashlib import sha256
 from util import Util as util
-import binascii
 import random
-import os
 import hashlib
-from base64 import b64encode, b64decode
-from Crypto.Cipher import AES
 
 util = util()
 
@@ -66,7 +62,7 @@ class KeyGen:
     @staticmethod
     def generate_decryption_phrase(self):
         try:
-            with open("source/decrypt_words.txt", "r", encoding="utf-8") as f:
+            with open("server/decrypt_words.txt", "r", encoding="utf-8") as f:
                 words = f.readlines()
         except FileNotFoundError:
             with open("decrypt_words.txt", "r", encoding="utf-8") as f:
@@ -74,17 +70,15 @@ class KeyGen:
         word_list = []
         number = 8  # Only 4, 6 or 8 are acceptable and the higher, the more secure.
         for i in range(number):
-            index = random.randint(1, 2500)
+            index = random.randint(0, 2499)
             word_list.append(words[index].strip())
-        # turn the list into a string
         word_list = " ".join(word_list)
         f.close()
         return word_list
 
     @staticmethod
-    def login_lixur(self):
-        new_wallet = input('Welcome to Lixur! Input "new" to create a new wallet, or "existing" to access an existing one: ')
-        new_wallet = new_wallet.lower()
+    def login_lixur(self, input):
+        new_wallet = input.lower()
 
         if new_wallet == "new":
             self.is_new_wallet = True
@@ -99,16 +93,16 @@ class KeyGen:
         return self.is_new_wallet
 
     @staticmethod
-    def wallet(self):
-        if self.login_lixur(self) == True:
+    def wallet(self, input):
+        if self.login_lixur(self, input) == True:
             self.phrase = self.generate_decryption_phrase(self)
             self.input_encrypt = {
                 "_": self.get_private_key(self),
                 "__": self.get_public_key(self),
-                "___": self.get_readable_address(self),
+                "___": "This feature will be added later",
             }
             self.encrypt = bytes(str(self.input_encrypt), 'utf-8')
-            util.aes_wallet_encrypt(self.encrypt, self.phrase)
+            self.keystore = util.aes_wallet_encrypt(self.encrypt, self.phrase)
         elif self.is_new_wallet == False:
             result = util.aes_wallet_decrypt(self.get_keystore(self)[1], self.get_keystore(self)[0])
             self.private_key = result[0]
@@ -154,13 +148,8 @@ class KeyGen:
 
     @staticmethod
     def get_keystore(self):
-        try:
-            with open ("lixur_keystore.txt", "r", encoding="utf-8") as f:
-                keystore_dict = eval(f.read())
-                hash = keystore_dict['hash']
-            return keystore_dict, hash
-        except FileNotFoundError:
-            with open("lixur_keystore.txt", "r", encoding = "utf-8'") as f:
-                keystore_dict = eval(f.read())
-                hash = keystore_dict['hash']
-            return keystore_dict, hash
+        return self.keystore
+
+    @staticmethod
+    def get_phrase(self):
+        return self.phrase

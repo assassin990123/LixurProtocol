@@ -1,9 +1,9 @@
+import json
+
 from util import Util
 from random import randint
 from collections import OrderedDict
-import time
 from datetime import datetime
-import binascii
 import hashlib
 from cryptography import KeyGen as keygen
 
@@ -36,11 +36,10 @@ class tx:
         return x
     def hash_data(data):
         data = str(data).encode('utf-8')
-        h = hashsourcenew('sha256')
-        h.update(data)
+        h = hashlib.sha256(data)
         return h.hexdigest()
     def get_hash(self):
-        return hash_data(self.get_transaction_dict())
+        return self.hash_data(self.get_transaction_dict())
     def get_transaction_dict(self):
         transaction_dict = OrderedDict({
             'sender' : self.sender_public_key,
@@ -112,6 +111,18 @@ class Graph():
                 transaction.previous_hashes.append(tx)
 
             self.graph.update({transaction.key: transaction})
+            print(self.graph)
+
+            serializable_format = ({})
+            for (k, v) in self.graph.items():
+                serializable_format.update({k: v.get_transaction_dict()})
+                sort_by = "index"  # Options are: "index", "amount", "own_weight" or "timestamp"
+            serializable_format = sorted(serializable_format.items(), key=lambda x: x[1][sort_by], reverse=True)
+
+            with open ("graph.json", 'w') as f:
+                f.truncate(0)
+                json.dump(serializable_format, f)
+
             self.pending_transactions.remove(transaction)
             self.state += 1
             return self.tx_key
