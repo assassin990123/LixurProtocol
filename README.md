@@ -15,15 +15,17 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 After around six months (November 2nd, 2022 to May 5th, 2022), we've finally been able to release the Testnet Beta! This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. This is the Testnet Beta of course!
 
 ### How to Run:
-Step 1. Download the executable file here: [Download Lixur Client](https://drive.google.com/file/d/11U0ye49QJn9fbxKf0jTkZW3lR8i8ZVN6/view?usp=sharing)
+Step 1. Disable your anti-virus so it doesn't interfere with your code.
 
-Step 2. Download a JSON Viewer and make sure it's on. If you are using Firefox, skip. [Download JSON Viewer for Chrome](https://bit.ly/3MUUISo)
+Step 2. Download the executable file here: [Download Lixur Client](https://drive.google.com/file/d/11U0ye49QJn9fbxKf0jTkZW3lR8i8ZVN6/view?usp=sharing)
 
-Step 3. Unzip the 'lixur_client.zip' file and launch 'run.exe'.
+Step 3. Download a JSON Viewer and make sure it's on. If you are using Firefox, skip. [Download JSON Viewer for Chrome](https://bit.ly/3MUUISo)
 
-Step 4. It should say "You have connected to the server successfully!" on the screen, if not, The server is down or a connection failure occured, if so, try executing the file again.
+Step 4. Unzip the 'lixur_client.zip' file and launch 'run.exe'.
 
-Step 5. Type the following address in your browser: "127.0.0.1:5000", this may give an error the first time you attempt to do it but keep refreshing, it should eventually work, and there you go, you're in! Since it's a Testnet, the coins are worthless. Every new user starts off with 69,420,000 LXR!
+Step 5. It should say "You have connected to the server successfully!" on the screen, if not, The server is down or a connection failure occured, if so, try executing the file again.
+
+Step 6. Type the following address in your browser: "127.0.0.1:5000", this may give an error the first time you attempt to do it but keep refreshing, it should eventually work, and there you go, you're in! Since it's a Testnet, the coins are worthless. Every new user starts off with 69,420,000 LXR!
 
 ### Testnet Navigation Help, Tips and Notes:
 1. 127.0.0.1:5000/ - Displays the graph/blockchain.
