@@ -49,9 +49,15 @@ class Run:
         try:
             if "index" in util.data:
                 graph_ = eval(util.data)
-                with open("graph.json", "w") as f:
-                    f.truncate(0)
-                    json.dump(graph_, f)
+                try:
+                    with open("graph.json", "x") as f:
+                        json.dump(graph_, f)
+                        f.close()
+                except FileExistsError:
+                    with open("graph.json", "w") as f:
+                        f.truncate(0)
+                        json.dump(graph_, f)
+                        f.close()
         except AttributeError:
             raise AssertionError("Either you have not connected to the server, or you just need to refresh the page you're trying to access!")
 
