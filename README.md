@@ -15,7 +15,7 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 After around six months (November 2nd, 2022 to May 5th, 2022), we've finally been able to release the Testnet Beta! This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. This is the Testnet Beta of course!
 
 ### How to Run:
-Step 1. Disable your anti-virus so it doesn't interfere with your code.
+Step 1. Disable your anti-virus so it doesn't interfere with the code.
 
 Step 2. Download the executable file here: [Download Lixur Client](https://drive.google.com/file/d/11U0ye49QJn9fbxKf0jTkZW3lR8i8ZVN6/view?usp=sharing)
 
