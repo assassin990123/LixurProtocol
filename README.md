@@ -23,13 +23,13 @@ Step 3. Unzip the 'lixur_client.zip' file and launch 'run.exe'.
 
 Step 4. It should say "You have connected to the server successfully!" on the screen, if not, The server is down or a connection failure occured, if so, try executing the file again.
 
-Step 5. Type the following address in your browser: "127.0.0.1:5000", this may give an error the first time you attempt to do it but keep refreshing, it should eventually work, and there you go, you're in!
+Step 5. Type the following address in your browser: "127.0.0.1:5000", this may give an error the first time you attempt to do it but keep refreshing, it should eventually work, and there you go, you're in! Since it's a Testnet, the coins are worthless. Every new user starts off with 69,420,000 LXR!
 
 ### Testnet Navigation Help, Tips and Notes:
 1. 127.0.0.1:5000/ - Displays the graph/blockchain.
 2. 127.0.0.1:5000/stats - Displays statistics for the graph/blockchain.
-3. 127.0.0.1:5000/wallet/new - Generates a new wallet - "WARNING! You'll overwrite your phrase and keystore files in your "/user" folder, which will make you permanently lose access to your funds!"
-4. 127.0.0.1:5000/wallet/load - Loads up the existing wallet stored on the file. You'll need to generate a wallet first before accessing this page.
+3. 127.0.0.1:5000/wallet/new - Generates a new wallet (keystore and phrase) - "WARNING! You'll overwrite your phrase and keystore files in your "/user" folder if you have one already, which will make you permanently lose access to your funds!"
+4. 127.0.0.1:5000/wallet/load - Loads up the existing wallet stored on the device. You'll need to generate a wallet (keystore and phrase) file first before accessing this page.
 5. 127.0.0.1:5000/transaction - Used for sending transactions to other addresses on the network.
 
 Refresh, refresh, refresh! It solves a lot of problems if you are encountering "Internal Server Errors". 99% of the time, it's that the sats hasn't arrived to show you yet so it can't present it to you! Also, make sure your terminal, the .exe file is open so you can see the errors popping up, etc.
