@@ -18,7 +18,7 @@ class Node:
         self.graph = Graph()
         self.port = random.randint(1024, 65000)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(('170.187.204.77', self.port))
+        self.sock.bind(('Server IP Address goes here', self.port))
         self.sock.listen()
         print(f'Selected Port: {self.port}')
     def server_functionality(self):
