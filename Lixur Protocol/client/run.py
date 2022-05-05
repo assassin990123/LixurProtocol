@@ -8,6 +8,7 @@ from base64 import b64encode, b64decode
 from flask import Flask, jsonify, request
 from Crypto.Cipher import AES
 
+# The "/user" directory is not found here, but is used in the actual .exe file.
 
 class Run:
     def __init__(self):
@@ -30,7 +31,7 @@ class Run:
                 except AttributeError:
                     raise AssertionError("Either you have not connected to the server, or you just need to refresh the page you're trying to access!")
         except socket.error:
-            raise RuntimeError("Your attempt to connect to the server failed!")
+            raise RuntimeError("Your attempt to connect to the server failed! Either you've encountered a connection error, or the server is down!")
 
     def send(self, message):
         try:
@@ -47,11 +48,11 @@ class Run:
             if "index" in util.data:
                 graph_ = eval(util.data)
                 try:
-                    with open("graph.json", "x") as f:
+                    with open("user/graph.json", "x") as f:
                         json.dump(graph_, f)
                         f.close()
                 except FileExistsError:
-                    with open("graph.json", "w") as f:
+                    with open("user/graph.json", "w") as f:
                         f.truncate(0)
                         json.dump(graph_, f)
                         f.close()
@@ -60,13 +61,13 @@ class Run:
 
     @staticmethod
     def get_graph_file(self):
-        with open("graph.json", "r") as f:
+        with open("user/graph.json", "r") as f:
             graph_from_file = dict(json.load(f))
         return graph_from_file
 
     @staticmethod
     def aes_wallet_decrypt(self, phrase_hash, keystore):
-        with open("lixur_phrase.txt", "r") as f:
+        with open("user/lixur_phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
         if hashlib.sha256(user_input.encode('utf-8')).hexdigest() == phrase_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, b64decode(keystore['nonce'].encode('utf-8')))
@@ -98,7 +99,7 @@ class Run:
         return balance
 
     def does_address_exist(self, address):
-        with open('graph.json', 'r') as f:
+        with open('user/graph.json', 'r') as f:
             data = dict(json.load(f))
         addresses = []
         for x in data.values():
@@ -133,7 +134,7 @@ util = Run()
 def graph():
     util.get_graph()
     time.sleep(0.1)
-    with open('graph.json', 'r') as f:
+    with open('user/graph.json', 'r') as f:
         serializable_format = dict(json.load(f))
     graph = sorted(serializable_format.items(), key=lambda x: x[1]["index"], reverse=True)
     return jsonify(graph), 201
@@ -172,22 +173,22 @@ def new_wallet():
     if type(eval(util.data)) == tuple and "is_existing" not in locals():
         keystore = eval(util.data)[0]
         try:
-            with open("lixur_keystore.txt", "x") as f:
+            with open("user/lixur_keystore.txt", "x") as f:
                 f.write(keystore)
                 f.close()
         except FileExistsError:
-            with open("lixur_keystore.txt", "w") as f:
+            with open("user/lixur_keystore.txt", "w") as f:
                 f.truncate(0)
                 f.write(keystore)
                 f.close()
 
         phrase = eval(util.data)[1]
         try:
-            with open("lixur_phrase.txt", "x") as f:
+            with open("user/lixur_phrase.txt", "x") as f:
                 f.write(str(phrase))
                 f.close()
         except FileExistsError:
-            with open("lixur_phrase.txt", "w") as f:
+            with open("user/lixur_phrase.txt", "w") as f:
                 f.truncate(0)
                 f.write(str(phrase))
                 f.close()
@@ -196,7 +197,7 @@ def new_wallet():
         print("Do not share it with anyone! Anyone with your seedphrase will have unlimited access over your funds, forever!")
         print("Your keystore and your phrase have been saved onto your device.")
 
-        with open("lixur_keystore.txt", "r") as f:
+        with open("user/lixur_keystore.txt", "r") as f:
             keystore_ = eval(f.read())
         wallet_info = util.aes_wallet_decrypt(util, keystore_['hash'], keystore_)
         util.make_transaction(wallet_info[2], wallet_info[2], 69420000, wallet_info[1], wallet_info[0])
@@ -208,7 +209,7 @@ def new_wallet():
 
 @app.route("/wallet/load", methods=['GET', 'POST'])
 def get_balance():
-    with open("lixur_keystore.txt", "r") as f:
+    with open("user/lixur_keystore.txt", "r") as f:
         ks = eval(f.read())
     decrypt_ks = util.aes_wallet_decrypt(util, ks['hash'], ks)
     util.get_graph()
@@ -227,7 +228,7 @@ def get_balance():
 
 @app.route("/transaction", methods=['GET', 'POST'])
 def make_transaction():
-    with open("lixur_keystore.txt", "r") as f:
+    with open("user/lixur_keystore.txt", "r") as f:
         keystore = eval(f.read())
     decrypted_keystore = util.aes_wallet_decrypt(util, keystore['hash'], keystore)
     user_private_key = decrypted_keystore[0]
@@ -249,7 +250,7 @@ def make_transaction():
             raise ValueError("The receiver's address does not exist on the blockchain! Refresh the blockchain and try again. If it still persists, it means that it doesn't "
                              "exist at all.")
         else:
-            print(f"Sending {str(prep_arguments['amount'])} LXR to {str(prep_arguments['receiver'])}...")
+            print(f'Sending {"{:,}".format(prep_arguments["amount"])} LXR to {str(prep_arguments["receiver"])}...')
             util.send(prep_arguments)
             time.sleep(1.2)
             util.get_graph()
