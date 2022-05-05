@@ -204,7 +204,7 @@ def new_wallet():
         util.make_transaction(wallet_info[2], wallet_info[2], 69420000, wallet_info[1], wallet_info[0])
     else:
         raise RuntimeError("Something went wrong! Please try again!")
-    return jsonify('If you have been given your seedphrase, Go to /wallet/info to see your address and balance! If not, refresh the page and try again.')
+    return jsonify('If you have been given your seedphrase, Go to /wallet/load to see your address and balance! If not, refresh the page and try again.')
 
 
 @app.route("/wallet/load", methods=['GET', 'POST'])
