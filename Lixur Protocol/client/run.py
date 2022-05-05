@@ -15,8 +15,8 @@ class Run:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def connect(self):
-        server_ip = "Server IP Address goes here"
-        server_port = int(input("Enter port number: \n"))
+        server_ip = "170.187.204.77"
+        server_port = 63769
         try:
             self.s.connect((server_ip, server_port))
             print("You have connected to the server successfully!")
@@ -39,9 +39,6 @@ class Run:
         except socket.error:
             raise RuntimeError("Your attempt to send a message to the server failed!")
 
-    @staticmethod
-    def bold(self, text):
-        return "\033[1m" + text + "\033[0m"
 
     def get_graph(self):
         self.send("get_graph")
@@ -85,7 +82,7 @@ class Run:
                 if hash(user_input) == ks_hash:
                     return private_key, public_key, alphanumeric_address
                 else:
-                    print(f'Decryption failed!, hash of input: {hash(user_input)} does not match hah of keystore: {phrase_hash}')
+                    print(f'Decryption failed!, hash of input: {hash(user_input)} does not match the hash of the keystore: {phrase_hash}')
 
     def get_balance(self, address):
         balance = 0
@@ -193,7 +190,7 @@ def new_wallet():
                 f.truncate(0)
                 f.write(str(phrase))
                 f.close()
-        print(f"Your seedphrase for your new wallet is: {util.bold(util, str(phrase))}")
+        print(f"Your seedphrase for your new wallet is: {str(phrase)}")
         print("Write it down, store it in a safe place as you'll need it to access your wallet. If you lose your seedphrase, you will lose access to your wallet!")
         print("Do not share it with anyone! Anyone with your seedphrase will have unlimited access over your funds, forever!")
         print("Your keystore and your phrase have been saved onto your device.")
@@ -204,7 +201,8 @@ def new_wallet():
         util.make_transaction(wallet_info[2], wallet_info[2], 69420000, wallet_info[1], wallet_info[0])
     else:
         raise RuntimeError("Something went wrong! Please try again!")
-    return jsonify('If you have been given your seedphrase, Go to /wallet/load to see your address and balance! If not, refresh the page and try again.')
+    return jsonify('If you have been given your seedphrase, Go to http://127.0.0.1:5000/wallet/load to see your address and balance!'
+                   ' If not, refresh the page and try again.')
 
 
 @app.route("/wallet/load", methods=['GET', 'POST'])
@@ -221,7 +219,8 @@ def get_balance():
         }
     else:
         raise ValueError(
-            "The wallet address you're trying to access does not exist on the blockchain. Refresh the page and try again, if the error persists, it means it doesn't exist at all.")
+            "The wallet address you're trying to access does not exist on the blockchain. "
+            "Refresh the page and try again, if the error persists, it means it doesn't exist at all.")
     return jsonify(user_stats)
 
 
@@ -249,7 +248,7 @@ def make_transaction():
             raise ValueError("The receiver's address does not exist on the blockchain! Refresh the blockchain and try again. If it still persists, it means that it doesn't "
                              "exist at all.")
         else:
-            print(f"Sending {util.bold(util, str(prep_arguments['amount']))} to {util.bold(util, prep_arguments['receiver'])}...")
+            print(f"Sending {str(prep_arguments['amount'])} to {str(prep_arguments['receiver'])}...")
             util.send(prep_arguments)
             time.sleep(1.2)
             util.get_graph()
