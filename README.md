@@ -32,6 +32,8 @@ Step 5. Type the following address in your browser: "127.0.0.1:5000", this may g
 4. 127.0.0.1:5000/wallet/load - Loads up the existing wallet stored on the file. You'll need to generate a wallet first before accessing this page.
 5. 127.0.0.1:5000/transaction - Used for sending transactions to other addresses on the network.
 
+Refresh, refresh, refresh! It solves a lot of problems if you are encountering "Internal Server Errors". 99% of the time, it's that the sats hasn't arrived to show you yet so it can't present it to you! Also, make sure your terminal, the .exe file is open so you can see the errors popping up, etc.
+
 If your balance ever doesn't work correctly, or if anything doesn't work correctly, refreshing the graph or the page almost always helps.
 If refreshing doesn't work, any other errors you encounter, please email me at "naisukhy@gmail.com" or submit the issue on the repository page here with a picture, exact time with the time zone and describe the error as precisely as possible.
 
