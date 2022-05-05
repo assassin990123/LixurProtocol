@@ -17,7 +17,7 @@ Step 1. Download the executable file here: [Download Lixur Client](https://drive
 
 Step 2. Download a JSON Viewer and make sure it's on. If you are using Firefox, skip. [Download JSON Viewer for Chrome](https://bit.ly/3MUUISo)
 
-Step 3. Unzip and launch 'run.exe'.
+Step 3. Unzip the 'lixur_client.zip' file and launch 'run.exe'.
 
 Step 4. It should say "You have connected to the server successfully!" on the screen, if not, The server is down or a connection failure occured, if so, try executing the file again.
 
