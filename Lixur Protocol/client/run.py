@@ -3,15 +3,18 @@ import time
 import threading
 import hashlib
 import json
-import flask
 from base64 import b64encode, b64decode
+
 from flask import Flask, jsonify, request
 from Crypto.Cipher import AES
 
 
 class Run:
-    def connect(self):
+    def __init__(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    def connect(self):
         server_ip = "170.187.204.77"
         server_port = int(input("Enter port number: \n"))
         try:
@@ -19,41 +22,48 @@ class Run:
             print("You have connected to the server successfully!")
             while True:
                 try:
-                    self.data = self.s.recv(500000).decode('utf-8')
-                    print(self.data)
+                    self.data = self.s.recv(500000000).decode('utf-8')
                 except ConnectionResetError:
-                    print("The server has shut down!")
-                    exit()
+                    raise RuntimeError("The server has shut down!")
+                except ConnectionAbortedError:
+                    raise RuntimeError("The server has shut down!")
+                except AttributeError:
+                    raise AssertionError("Either you have not connected to the server, or you just need to refresh the page you're trying to access!")
         except socket.error:
-            print("Your attempt to connect to the server failed!")
-            exit()
+            raise RuntimeError("Your attempt to connect to the server failed!")
 
     def send(self, message):
         try:
             self.s.send(str(message).encode())
             return True
         except socket.error:
-            print("Your attempt to send a message to the server failed!")
+            raise RuntimeError("Your attempt to send a message to the server failed!")
 
+    @staticmethod
     def bold(self, text):
         return "\033[1m" + text + "\033[0m"
 
     def get_graph(self):
         self.send("get_graph")
         time.sleep(0.1)
-        if "index" in util.data:
-            graph = eval(util.data)
-            with open("graph.json", "w") as f:
-                f.truncate(0)
-                json.dump(graph, f)
+        try:
+            if "index" in util.data:
+                graph_ = eval(util.data)
+                with open("graph.json", "w") as f:
+                    f.truncate(0)
+                    json.dump(graph_, f)
+        except AttributeError:
+            raise AssertionError("Either you have not connected to the server, or you just need to refresh the page you're trying to access!")
 
+    @staticmethod
     def get_graph_file(self):
         with open("graph.json", "r") as f:
-            graph = dict(json.load(f))
-        return graph
+            graph_from_file = dict(json.load(f))
+        return graph_from_file
 
+    @staticmethod
     def aes_wallet_decrypt(self, phrase_hash, keystore):
-        with open ("lixur_phrase.txt", "r") as f:
+        with open("lixur_phrase.txt", "r") as f:
             user_input = f.read().replace(" ", "")
         if hashlib.sha256(user_input.encode('utf-8')).hexdigest() == phrase_hash:
             cipher = AES.new(bytes(user_input, encoding='utf-8'), AES.MODE_EAX, b64decode(keystore['nonce'].encode('utf-8')))
@@ -61,20 +71,19 @@ class Run:
             cipher.verify(b64decode(keystore['tag'].encode('utf-8')))
             private_key = eval(plaintext.decode('utf-8'))['_']
             public_key = eval(plaintext.decode('utf-8'))['__']
-            readable_address = eval(plaintext.decode('utf-8'))['___']
             alphanumeric_address = hashlib.sha256(public_key).hexdigest()
             try:
-                return private_key, public_key, alphanumeric_address, readable_address
+                return private_key, public_key, alphanumeric_address
 
             except NameError:
                 if hash(user_input) == ks_hash:
-                    return private_key, public_key, alphanumeric_address, readable_address
+                    return private_key, public_key, alphanumeric_address
                 else:
                     print(f'Decryption failed!, hash of input: {hash(user_input)} does not match hah of keystore: {phrase_hash}')
 
     def get_balance(self, address):
         balance = 0
-        graph_data = self.get_graph_file()
+        graph_data = self.get_graph_file(self)
         for tx in graph_data:
             if graph_data[tx]['sender'] == address and graph_data[tx]['recipient'] == address:
                 balance += float(graph_data[tx]['amount'])
@@ -84,6 +93,18 @@ class Run:
                 balance += float(graph_data[tx]["amount"])
         balance = float(balance)
         return balance
+
+    def does_address_exist(self, address):
+        with open('graph.json', 'r') as f:
+            data = dict(json.load(f))
+        addresses = []
+        for x in data.values():
+            addresses.append(x['sender'])
+            addresses.append(x['recipient'])
+        if address in addresses:
+            return True
+        else:
+            return False
 
     def make_transaction(self, sender, receiver, amount, public_key, private_key):
         if amount <= 0:
@@ -97,8 +118,9 @@ class Run:
                 "private_key": private_key
             }
             self.send(arguments)
-            self.get_graph()
-            self.get_graph()
+            time.sleep(2)
+            util.get_graph()
+
 
 app = Flask(__name__)
 util = Run()
@@ -107,7 +129,6 @@ util = Run()
 @app.route("/", methods=['GET', 'POST'])
 def graph():
     util.get_graph()
-    util.get_graph()
     time.sleep(0.1)
     with open('graph.json', 'r') as f:
         serializable_format = dict(json.load(f))
@@ -115,125 +136,124 @@ def graph():
     return jsonify(graph), 201
 
 
-@app.route('/wallet', methods=['GET', 'POST'])
-def main():
-    msg = input("Welcome to Lixur! Input 'new' to create a new wallet or 'existing' to access an existing one: ").lower()
-    if msg == "new" or msg == "existing":
-        if msg == "existing":
-            is_existing = True
-        util.send(msg)
-        time.sleep(0.5)
-        if type(util.data) == str or "send" in util.data:
-            if util.data == "send_ks":
-                print("Your private key has been sent to your email!")
-                is_existing = True
-                with open("lixur_keystore.txt", "r") as f:
-                    keystore = str(f.read())
-                    util.send(keystore)
-                    time.sleep(0.2)
-            if util.data == "send_phr" or "send_phr" in util.data:
-                phrase = input("Enter your decryption seedphrase to access your wallet: ")
-                util.send(phrase)
-                time.sleep(1)
-        if type(eval(util.data)) == tuple and "is_existing" not in locals():
-            keystore = eval(util.data)[0]
-            try:
-                with open("lixur_keystore.txt", "x") as f:
-                    f.write(keystore)
-                    f.close()
-                    print("Your keystore has been saved to the file 'lixur_keystore.txt'!")
-            except FileExistsError:
-                with open("lixur_keystore.txt", "w") as f:
-                    f.truncate(0)
-                    f.write(keystore)
-                    f.close()
-                    print("Your keystore has been saved to the file 'lixur_keystore.txt'!")
+@app.route("/stats", methods=['GET', 'POST'])
+def stats():
+    ledger = util.get_graph_file(util)
+    unique_addresses = []
+    for key in ledger:
+        if ledger[key]['sender'] not in unique_addresses:
+            unique_addresses.append(ledger[key]['sender'])
+        if ledger[key]['recipient'] not in unique_addresses:
+            unique_addresses.append(ledger[key]['recipient'])
+    unique_addresses = list(set(unique_addresses))
+    unique_addresses.remove("None")
+    number_of_unique_addresses = len(unique_addresses) - 1
+    total_amount_of_lxr = 0
+    for key in ledger:
+        total_amount_of_lxr += ledger[key]['amount']
+    total_amount_of_lxr = "{:,}".format(total_amount_of_lxr) + " LXR"
 
-            phrase = eval(util.data)[1]
-            try:
-                with open("lixur_phrase.txt", "x") as f:
-                    f.write(str(phrase))
-                    f.close()
-            except FileExistsError:
-                with open("lixur_phrase.txt", "w") as f:
-                    f.truncate(0)
-                    f.write(str(phrase))
-                    f.close()
-            print(f"Your generated seedphrase for your new wallet is: {util.bold(str(phrase))}")
-            print("Write it down, store it in a safe place as you'll need it to access your wallet. "
-                  "If you lose your seedphrase, you will lose access to your wallet!")
-            print("Do not share it with anyone! Anyone with your seedphrase will have unlimited access over your funds, forever!")
-            print("You can also find your phrase saved in the file 'lixur_phrase.txt'")
+    response = {
+        "Successful Transaction Count": len(ledger.keys()),
+        "Total Unique Addresses": number_of_unique_addresses,
+        "Total Supply of LXR": total_amount_of_lxr,
+    }
+    return jsonify(response), 201
 
-            wallet_info = eval(util.data)[2]
-            print(f"Your wallet has been recovered successfully! Your wallet address is: {util.bold(str(wallet_info[0]))}")
-            util.make_transaction(wallet_info[0], wallet_info[0], 69420000, wallet_info[2], wallet_info[3])
-            return_response = {
-                "address": wallet_info[0],
-                "balance": f'{"{:,}".format(util.get_balance(wallet_info[0]))} LXR',
-            }
-            print(f"Your address is: {util.bold(str(wallet_info[0]))}")
-            print(f'Your balance is: {util.bold(str("{:,}".format(util.get_balance(wallet_info[0]))))} LXR')
-            global user_info
-            user_info = {
-                "address": wallet_info[0],
-                "balance": f'{util.bold(str("{:,}".format(util.get_balance(wallet_info[0]))))} LXR',
-                "public_key": wallet_info[2],
-                "private_key": wallet_info[3],
-            }
-        elif is_existing == True and "is_existing" in locals():
-            global ex_user_info
-            ex_user_info = {
-                "address": eval(util.data)[0],
-                "balance": f'{util.bold(str("{:,}".format(util.get_balance(str(util.data)[0]))))} LXR',
-                "public_key": eval(util.data)[2],
-                "private_key": eval(util.data)[3],
-            }
-            print(f"Your wallet address is: {util.bold(ex_user_info['address'])}")
-            print(f'Your balance is: {util.bold(str("{:,}".format(util.get_balance(str(util.data)[0]))))} LXR')
-            return_response = {
-                "address": ex_user_info['address'],
-                "balance": ex_user_info['balance'],
-            }
-    else:
-        print("Something went wrong! Please try again!")
-        exit()
 
+@app.route('/wallet/new', methods=['GET', 'POST'])
+def new_wallet():
+    util.send('new')
     time.sleep(0.5)
-    return jsonify(return_response)
+    if type(eval(util.data)) == tuple and "is_existing" not in locals():
+        keystore = eval(util.data)[0]
+        try:
+            with open("lixur_keystore.txt", "x") as f:
+                f.write(keystore)
+                f.close()
+        except FileExistsError:
+            with open("lixur_keystore.txt", "w") as f:
+                f.truncate(0)
+                f.write(keystore)
+                f.close()
+
+        phrase = eval(util.data)[1]
+        try:
+            with open("lixur_phrase.txt", "x") as f:
+                f.write(str(phrase))
+                f.close()
+        except FileExistsError:
+            with open("lixur_phrase.txt", "w") as f:
+                f.truncate(0)
+                f.write(str(phrase))
+                f.close()
+        print(f"Your seedphrase for your new wallet is: {util.bold(util, str(phrase))}")
+        print("Write it down, store it in a safe place as you'll need it to access your wallet. If you lose your seedphrase, you will lose access to your wallet!")
+        print("Do not share it with anyone! Anyone with your seedphrase will have unlimited access over your funds, forever!")
+        print("Your keystore and your phrase have been saved onto your device.")
+
+        with open("lixur_keystore.txt", "r") as f:
+            keystore_ = eval(f.read())
+        wallet_info = util.aes_wallet_decrypt(util, keystore_['hash'], keystore_)
+        util.make_transaction(wallet_info[2], wallet_info[2], 69420000, wallet_info[1], wallet_info[0])
+    else:
+        raise RuntimeError("Something went wrong! Please try again!")
+    return jsonify('If you have been given your seedphrase, Go to /wallet/info to see your address and balance! If not, refresh the page and try again.')
+
+
+@app.route("/wallet/load", methods=['GET', 'POST'])
+def get_balance():
+    with open("lixur_keystore.txt", "r") as f:
+        ks = eval(f.read())
+    decrypt_ks = util.aes_wallet_decrypt(util, ks['hash'], ks)
+    util.get_graph()
+    time.sleep(0.5)
+    if util.does_address_exist(decrypt_ks[2]) == True:
+        user_stats = {
+            "address": decrypt_ks[2],
+            "balance": f'{"{:,}".format(util.get_balance(decrypt_ks[2]))} LXR',
+        }
+    else:
+        raise ValueError(
+            "The wallet address you're trying to access does not exist on the blockchain. Refresh the page and try again, if the error persists, it means it doesn't exist at all.")
+    return jsonify(user_stats)
 
 
 @app.route("/transaction", methods=['GET', 'POST'])
 def make_transaction():
-    with open ("lixur_keystore.txt", "r") as f:
+    with open("lixur_keystore.txt", "r") as f:
         keystore = eval(f.read())
-    decrypted_keystore = util.aes_wallet_decrypt(keystore['hash'], keystore)
+    decrypted_keystore = util.aes_wallet_decrypt(util, keystore['hash'], keystore)
     user_private_key = decrypted_keystore[0]
     user_public_key = decrypted_keystore[1]
     user_address = decrypted_keystore[2]
-    prep_arguments = {
-        "sender": user_address,
-        "receiver": input("Enter the receiver's address: "),
-        "amount": float(input("Enter the amount of LXR you want to send: ")),
-        "public_key": user_public_key,
-        "private_key": user_private_key,
-    }
-    if prep_arguments['sender'] == prep_arguments['receiver']:
-        print("You cannot send LXR to yourself!")
-        exit()
-    if prep_arguments['amount'] == None or float(prep_arguments['amount']) <= 0:
-        print("You cannot send 0 or less LXR!")
-        exit()
-    print(f"{util.bold(user_address)} -> {util.bold(str(prep_arguments['amount']))} LXR -> {util.bold(prep_arguments['receiver'])}")
-    util.send(prep_arguments)
-    util.get_graph()
-    util.get_graph()
+    if util.does_address_exist(user_address) == True:
+        prep_arguments = {
+            "sender": user_address,
+            "receiver": input("Enter the receiver's address: "),
+            "amount": float(input("Enter the amount of LXR you want to send: ")),
+            "public_key": user_public_key,
+            "private_key": user_private_key,
+        }
+        if prep_arguments['sender'] == prep_arguments['receiver']:
+            raise ValueError("You cannot send LXR to yourself!")
+        if prep_arguments['amount'] == None or float(prep_arguments['amount']) <= 0:
+            raise ValueError("You cannot send 0 or less LXR!")
+        if util.does_address_exist(prep_arguments['receiver']) == False:
+            raise ValueError("The receiver's address does not exist on the blockchain! Refresh the blockchain and try again. If it still persists, it means that it doesn't "
+                             "exist at all.")
+        else:
+            print(f"Sending {util.bold(util, str(prep_arguments['amount']))} to {util.bold(util, prep_arguments['receiver'])}...")
+            util.send(prep_arguments)
+            time.sleep(1.2)
+            util.get_graph()
+    else:
+        raise ValueError("Your wallet address does not exist on the blockchain. Please try again.")
     return jsonify("The transaction has been sent! Refresh the graph and check to see if it has been validated and added to the graph!"), 200
 
 
 if __name__ == "__main__":
+    print("Booting up Lixur Testnet [Beta] v0.0.1...\n")
     threading.Thread(target=util.connect).start()
     time.sleep(.5)
     app.run()
-
-# -----------------------------------------------------------------------------------------------------------------------------------------------------
