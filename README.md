@@ -36,6 +36,8 @@ If refreshing doesn't work, any other errors you encounter, please email me at "
 
 Your keystore and phrase file is what allows you to access your wallet, if you ever delete it, you're basically deleting your access to your funds permanently! If you want to have multiple wallets, after generating a wallet, move your keystore and phrase out of it's original directory and make a new one, if you ever want to boot your old one again, get your old keystore and phrase and put it in the "/user" directory.
 
+When sending a transaction, make sure you enter the exact address and amount, if not, you'll have to do it over and over again until it works.
+
 ### How to Contribute
 
 So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must. Our project management and our project checklist is avaiable on JetBrains and our primary source of communication is Discord, it only takes a minute at most to signup! Open issues or contact us on Discord/JetBrains for things you want to see added, modified, discuss ideas or help out with existing issues. If you have any questions, please contact me on Jetbrains, Discord or if those aren't possible, my email which is `naisukhy@gmail.com`
