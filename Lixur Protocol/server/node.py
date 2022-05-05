@@ -16,11 +16,6 @@ graph = Graph()
 class Node:
     def __init__(self):
         self.graph = Graph()
-        self.value = None
-        self.peers = []
-        self.peer_count = len(self.peers)
-        self.query_num = 3
-        self.your_id = None
         self.port = random.randint(1024, 65000)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind(('170.187.204.77', self.port))
@@ -28,49 +23,60 @@ class Node:
         print(f'Selected Port: {self.port}')
     def server_functionality(self):
         while True:
-            self.connection, client_address = self.sock.accept()
-            print(f"{client_address} has connected.")
-            self.data = self.connection.recv(500000).decode()
-            print(f'Data received from {client_address}:{self.data}')
-            self.eval_command(self.data)
+            client_connection_socket, client_address = self.sock.accept()
+            print(f'The connection with {client_address} has been established.')
+            threading.Thread(target=self.client_thread,
+                             args=(client_connection_socket, client_address)).start()
 
-    def eval_command(self, comm):
+    def client_thread(self, client_connection_socket, client_address):
+        bytes = 500000000
+        try:
+            data = client_connection_socket.recv(bytes).decode()
+            while True:
+                if data:
+                    try:
+                        self.eval_command(data, client_connection_socket)
+                        data = client_connection_socket.recv(bytes).decode()
+                    except ConnectionResetError:
+                        client_connection_socket.close()
+                        print(f'{client_address} has left.')
+        except ConnectionResetError:
+            client_connection_socket.close()
+            print(f'{client_address} has left.')
+
+    def eval_command(self, comm, conn):
         if comm == "new" or "existing":
             if comm == "new":
                 k.wallet(k, comm)
                 keystore = f'''{k.get_keystore(k)}'''
                 phrase = str(k.get_phrase(k))
-                print(phrase)
-                stats = util.aes_wallet_decrypt(
-                    phrase, eval(keystore)['hash'], eval(keystore))
-                all = keystore, phrase, stats
-                self.connection.send(util.encode_data(all))
+                all = keystore, phrase
+                conn.send(util.encode_data(all))
 
             elif comm == "existing":
-                self.connection.send(util.encode_data("send_ks"))
-                time.sleep(.1)
+                pass
+
             elif "cipher_text" in comm:
-                self.keystore = eval(comm)
-                self.connection.send(util.encode_data("send_phr"))
-                time.sleep(.1)
+                pass
 
             elif len(comm) == 42 or len(comm) == 39 or len(comm) == 32:
                 self.phrase = comm
                 self.decryption_ready = True
-                self.connection.send(util.encode_data(util.aes_wallet_decrypt(
+                conn.send(util.encode_data(util.aes_wallet_decrypt(
                     self.phrase, self.keystore['hash'], self.keystore)))
+
             elif comm == "get_graph" or "get_graph" in comm:
-                self.connection.send(util.encode_data(str(util.get_graph())))
-                print("Graph sent.")
+                conn.send(util.encode_data(str(util.get_graph())))
+
             elif "public_key" and "private_key" in comm:
-                print("Received a new transaction, adding...")
                 arguments = eval(comm)
                 sender = arguments['sender']
                 receiver = arguments['receiver']
                 amount = arguments['amount']
                 signature = k.sign_tx(arguments['public_key'], arguments['private_key'], "Lixur")
                 tx = graph.make_transaction(sender, receiver, amount, signature)
-                self.connection.send(util.encode_data(tx))
+                conn.send(util.encode_data(tx))
+
     def return_server_address(self):
         return self.server_address[0], self.server_address[1]
     def run_socket(self):
@@ -80,6 +86,7 @@ class Node:
         try:
             filename = "server/graph.json"
             with open(filename, 'w') as f:
+                print(self.getGraphAsJSONdict())
                 json.dump(self.getGraphAsJSONdict(), f)
         except FileNotFoundError:
             filename = "graph.json"

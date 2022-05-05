@@ -12,14 +12,13 @@ util = util()
 
 class KeyGen:
     def __init__(self):
-        self.public_key, self.private_key = generate_keypair()  # Keys are in bytes.
-        self.address = KeyGen.generate_addresses(self)
         self.available_addresses = []
 
     @staticmethod
-    def generate_addresses(self):
+    def generate_keys(self):
+        self.public_key, self.private_key = generate_keypair()  # Keys are in bytes.
         self.alphanumeric_address = hashlib.sha256(self.public_key).hexdigest()
-        return self.alphanumeric_address
+        return self.public_key, self.private_key, self.alphanumeric_address
 
     @staticmethod
     def get_alphanumeric_address(self):
@@ -44,12 +43,11 @@ class KeyGen:
     def sign_tx(public_key, private_key, message):
         signature = sign(private_key, message.encode('utf-8'))
         try:
-            x = verify(public_key, message.encode('utf-8'), signature)
-            assert x
+            verify(public_key, message.encode('utf-8'), signature)
             hashed_signature = sha256(signature).hexdigest()
+            return hashed_signature
         except AssertionError:
             print("[!] Signature verification failed. Invalid or non-existent signature")
-        return hashed_signature
 
     @staticmethod
     def get_public_key(self):
@@ -97,8 +95,8 @@ class KeyGen:
         if self.login_lixur(self, input) == True:
             self.phrase = self.generate_decryption_phrase(self)
             self.input_encrypt = {
-                "_": self.get_private_key(self),
-                "__": self.get_public_key(self),
+                "_": self.generate_keys(self)[1],
+                "__": self.generate_keys(self)[0],
                 "___": "This feature will be added later",
             }
             self.encrypt = bytes(str(self.input_encrypt), 'utf-8')

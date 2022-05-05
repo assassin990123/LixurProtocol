@@ -3,13 +3,14 @@ from flask import Flask, jsonify
 # imported classes
 from node import Node
 from util import Util
-from graph import Keys, Graph
+from graph import Graph
 from cryptography import KeyGen as keygen
 
 app = Flask(__name__)
 cryptography = keygen()
 node = Node()
 util = Util()
+graph = Graph()
 
 
 @app.route('/stats', methods=['GET', 'POST'])
@@ -47,8 +48,10 @@ def stats():
 
 @app.route('/', methods=['GET', 'POST'])
 def show_DAG():
-    serializable_format = node.getGraphAsJSONdict()
-    node.refresh()
+    serializable_format = util.get_graph()
+    for (k, v) in serializable_format.items():
+        sort_by = "index"  # Options are: "index", "amount", "own_weight" or "timestamp"
+    serializable_format = sorted(serializable_format.items(), key=lambda x: x[1][sort_by], reverse=True)
     return jsonify(serializable_format), 201
 
 if __name__ == '__main__':
