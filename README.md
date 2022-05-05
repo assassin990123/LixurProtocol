@@ -2,34 +2,35 @@
 
 ![Screenshot 2021-11-18 192213ccc](https://user-images.githubusercontent.com/87288707/155904619-8dca0af8-4e9f-433f-8c2e-60e7b0e97a64.jpg)
 
-![image](https://user-images.githubusercontent.com/87288707/155904797-03df3651-ea9d-40e9-9998-14726876519b.png) ![image](https://img.shields.io/badge/State-Testnet%20Beta%20Under%20Construction-informational) ![image](https://img.shields.io/badge/Python-3.7.0-blueviolet)
+![image](https://user-images.githubusercontent.com/87288707/155904797-03df3651-ea9d-40e9-9998-14726876519b.png) 
+![image](https://img.shields.io/badge/State-Testnet%20Beta%20Under%20Construction-informational) 
+![image](https://img.shields.io/badge/Python-3.7.0-blueviolet)
 
 ### What is Lixur ?
 Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
 
-This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. We haven't even launched the Testnet Beta yet so this is a work-in-progress.
+### Testnet Beta is finally released!: 
+After around six months, we've finally been able to release the Testnet Beta! This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. This is the Testnet Beta of course!
 
-You may have struggles to install the required module PQCrypto, it's likely you'll need to downgrade or upgrade your Python interpreter to 3.7.0 and manually install the package. 
+### How to Run:
+Step 1. Download the executable file here: [Download Lixur Client](https://drive.google.com/file/d/11U0ye49QJn9fbxKf0jTkZW3lR8i8ZVN6/view?usp=sharing)
+Step 2. Download a JSON Viewer and make sure it's on. If you are using Firefox, skip. [Download JSON Viewer for Chrome](https://bit.ly/3MUUISo)
+Step 3. Unzip and launch 'run.exe'.
+Step 4. It should say "You have connected to the server successfully!" on the screen, if not, The server is down or a connection failure occured, if so, try executing the file again.
+Step 5. Type the following address in your browser: "127.0.0.1:5000", this may give an error the first time you attempt to do it but keep refreshing, it should eventually work, and there you go, you're in!
 
-### Installation Instructions and Guide for PQCrypto: 
+### Testnet Navigation Help, Tips and Notes:
+1. 127.0.0.1:5000/ - Displays the graph/blockchain.
+2. 127.0.0.1:5000/stats - Displays statistics for the graph/blockchain.
+3. 127.0.0.1:5000/wallet/new - Generates a new wallet - "WARNING! You'll overwrite your phrase and keystore files in your "/user" folder, which will make you permanently lose access to your funds!"
+4. 127.0.0.1:5000/wallet/load - Loads up the existing wallet stored on the file 
 
-Pre-requisite: Before installing `requirements.txt`, remove `pqcrypto==0.1.3` from the requirements.txt file on your computer. 
-If you have previously installed the PQCrypto: Delete it completely off of your hard drive completely, restart your laptop and continue with the instructions
+If your balance ever doesn't work correctly, or if anything doesn't work correctly, refreshing the graph or the page almost always helps.
+If refreshing doesn't work, any other errors you encounter, please email me at "naisukhy@gmail.com" or submit the issue on the repository page here with a picture, exact time with the time zone and describe the error as precisely as possible.
 
-1. Make sure you have Python 3.7.0 and running that version for the project. Link: https://www.python.org/downloads/release/python-370/
-2. [[Download this ZIP file here]](https://drive.google.com/file/d/1ODfv9U8Q3nPfR4sjdmYc0ECGPISlLOeW/view?usp=sharing) Grab the two folders, extract it and move them to the following directory for Windows (or Mac/Linux Equivalent): 
-C:\Users\(Your Windows Name)\AppData\Local\Programs\Python\Python37\Lib\site-packages
-3. Once copied and pasted there, restart your laptop and head to your text editor.
-4. Install requirements.txt
-5. It should be working.
-
-Any questions, email me at naisukhy@gmail.com or submit the issue on the GitHub Repository
+Your keystore and phrase file is what allows you to access your wallet, if you ever delete it, you're basically deleting your access to your funds permanently! If you want to have multiple wallets, after generating a wallet, move your keystore and phrase out of it's original directory and make a new one, if you ever want to boot your old one again, get your old keystore and phrase and put it in the "/user" directory.
 
 ### How to Contribute
-
-Lixur is open-sourced and powered by the community, so feel free to contribute in any way you can to help us!
-
-### How you can help
 
 So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must. Our project management and our project checklist is avaiable on JetBrains and our primary source of communication is Discord, it only takes a minute at most to signup! Open issues or contact us on Discord/JetBrains for things you want to see added, modified, discuss ideas or help out with existing issues. If you have any questions, please contact me on Jetbrains, Discord or if those aren't possible, my email which is `naisukhy@gmail.com`
     
@@ -37,15 +38,6 @@ So you want to contribute? Please, please join our Discord Server and our JetBra
 <br> [Click here to join our Official Jetbrains Space Group Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
 
 You could also submit a pull request (fork the code first) and introduce yourself, why you're interested in this project and promise us you'll join the Jetbrains and the Discord Servers. We need to keep in touch with all of our developers.
-
-### How to Run
-* To run a node, install the required packages ***(download requirements.txt)***, and run Flask ***(not in terminal!)***, and it should pop up with three genesis trasactions.
-* To add new transactions, head to: `127.0.0.1:5000/transactions/new`
-* To access wallet or make a new wallet, head to: `127.0.0.1:5000/wallet`
-* To check network stats, head to: `127.0.0.1:5000/stats`
-* To check node status, head to: `127.0.0.1:5000/node`
-
-You can replace `127.0.0.1:5000` with a new IP:Port pair
 
 ***If you find any bugs, or anything that should be added, initiate a pull request, add the issue to the repository page or email me personally at:*** `naisukhy@gmail.com`
 
