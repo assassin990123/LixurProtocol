@@ -15,8 +15,8 @@ class Run:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def connect(self):
-        server_ip = "Server Address Goes Here"
-        server_port = 0000
+        server_ip = "170.187.204.77"
+        server_port = 63769
         try:
             self.s.connect((server_ip, server_port))
             print("You have connected to the server successfully!")
@@ -153,7 +153,8 @@ def stats():
     number_of_unique_addresses = len(unique_addresses) - 1
     total_amount_of_lxr = 0
     for key in ledger:
-        total_amount_of_lxr += ledger[key]['amount']
+        if ledger[key]['sender'] == ledger[key]['recipient']:
+            total_amount_of_lxr += ledger[key]['amount']
     total_amount_of_lxr = "{:,}".format(total_amount_of_lxr) + " LXR"
 
     response = {
@@ -248,7 +249,7 @@ def make_transaction():
             raise ValueError("The receiver's address does not exist on the blockchain! Refresh the blockchain and try again. If it still persists, it means that it doesn't "
                              "exist at all.")
         else:
-            print(f"Sending {str(prep_arguments['amount'])} to {str(prep_arguments['receiver'])}...")
+            print(f"Sending {str(prep_arguments['amount'])} LXR to {str(prep_arguments['receiver'])}...")
             util.send(prep_arguments)
             time.sleep(1.2)
             util.get_graph()
