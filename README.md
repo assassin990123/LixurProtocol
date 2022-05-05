@@ -30,6 +30,7 @@ Step 5. Type the following address in your browser: "127.0.0.1:5000", this may g
 2. 127.0.0.1:5000/stats - Displays statistics for the graph/blockchain.
 3. 127.0.0.1:5000/wallet/new - Generates a new wallet - "WARNING! You'll overwrite your phrase and keystore files in your "/user" folder, which will make you permanently lose access to your funds!"
 4. 127.0.0.1:5000/wallet/load - Loads up the existing wallet stored on the file. You'll need to generate a wallet first before accessing this page.
+5. 127.0.0.1:5000/transaction - Used for sending transactions to other addresses on the network.
 
 If your balance ever doesn't work correctly, or if anything doesn't work correctly, refreshing the graph or the page almost always helps.
 If refreshing doesn't work, any other errors you encounter, please email me at "naisukhy@gmail.com" or submit the issue on the repository page here with a picture, exact time with the time zone and describe the error as precisely as possible.
