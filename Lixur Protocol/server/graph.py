@@ -13,10 +13,10 @@ global difficulty
 difficulty = 1
 
 class Keys:
-    genesis_keys = cryptography.generate_addresses(keygen())
-    genesis_alphanumeric_address = genesis_keys
-    genesis_private_key = cryptography.get_private_key(cryptography)
-    genesis_public_key = cryptography.get_public_key(cryptography)
+    genesis_keys = cryptography.generate_keys(cryptography)
+    genesis_alphanumeric_address = genesis_keys[2]
+    genesis_private_key = genesis_keys[1]
+    genesis_public_key = genesis_keys[0]
 class tx:
     def __init__(self, sender_public_key, recipient_public_key, amount, signature, index):
         self.state = 0
@@ -111,7 +111,6 @@ class Graph():
                 transaction.previous_hashes.append(tx)
 
             self.graph.update({transaction.key: transaction})
-            print(self.graph)
 
             serializable_format = ({})
             for (k, v) in self.graph.items():
@@ -119,7 +118,7 @@ class Graph():
                 sort_by = "index"  # Options are: "index", "amount", "own_weight" or "timestamp"
             serializable_format = sorted(serializable_format.items(), key=lambda x: x[1][sort_by], reverse=True)
 
-            with open ("graph.json", 'w') as f:
+            with open("graph.json", 'w') as f:
                 f.truncate(0)
                 json.dump(serializable_format, f)
 
@@ -144,14 +143,16 @@ class Graph():
     def get_failed_transactions(self):
         return self.failed_transactions
     def does_address_exist(self, address):
-        graph = self.graph
-        for key in graph:
-            a = graph[key]
-            if a.sender_public_key == address or a.recipient_public_key == address:
-                return True
-            else:
-                return False
-                raise LookupError('The address you are trying to send cryptocurrency to does not exist')
+        graph = util.get_graph()
+        address_list = []
+        for x in graph.values():
+            address_list.append(x['sender'])
+            address_list.append(x['recipient'])
+        if address in address_list:
+            return True
+        else:
+            return False
+            raise LookupError('The address you are trying to send cryptocurrency to does not exist')
     def is_valid_transaction(self, transaction):
         try:
             if transaction.recipient_public_key == None:
