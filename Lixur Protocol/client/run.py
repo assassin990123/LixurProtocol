@@ -80,7 +80,7 @@ class Run:
                 return private_key, public_key, alphanumeric_address
 
             except NameError:
-                if hash(user_input) == ks_hash:
+                if hash(user_input) == phrase_hash:
                     return private_key, public_key, alphanumeric_address
                 else:
                     print(f'Decryption failed!, hash of input: {hash(user_input)} does not match the hash of the keystore: {phrase_hash}')
