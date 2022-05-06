@@ -16,8 +16,8 @@ class Run:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def connect(self):
-        server_ip = "170.187.204.77"
-        server_port = 63769
+        server_ip = "Server IP Address Goes Here"
+        server_port = 0000
         try:
             self.s.connect((server_ip, server_port))
             print("You have connected to the server successfully!")
