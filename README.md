@@ -9,8 +9,18 @@
 
 
 ### What is Lixur ?
-Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, privacy-preserving, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
-
+Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, feeless, theoretically infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
+ 
+✅ Quantum Resistant Cryptography
+✅ Directed Acyclic Graph
+✅ Feeless
+✅ Fast
+✅ Theoretically Infinitely Scalable
+❎ Smart Contracts
+❎ Intelligent Contracts (A.I. Smart Contracts)
+❎ Interconnected Multi-Chains
+❎ Decentralized 
+ 
 ### The Testnet Beta is finally released!: 
 After around six months (November 2nd, 2022 to May 5th, 2022), we've finally been able to release the Testnet Beta! This project is by no means complete and may feature plenty of bugs, security holes, etc. Please be aware of this. This is the Testnet Beta of course!
 
