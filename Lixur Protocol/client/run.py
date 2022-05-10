@@ -8,7 +8,6 @@ from base64 import b64encode, b64decode
 from flask import Flask, jsonify, request
 from Crypto.Cipher import AES
 
-# The "/user" directory is not found here, but is used in the actual .exe file.
 
 class Run:
     def __init__(self):
@@ -16,8 +15,8 @@ class Run:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def connect(self):
-        server_ip = "Server IP Address Goes Here"
-        server_port = 0000
+        server_ip = "170.187.204.77"
+        server_port = 63769
         try:
             self.s.connect((server_ip, server_port))
             print("You have connected to the server successfully!")
@@ -31,7 +30,7 @@ class Run:
                 except AttributeError:
                     raise AssertionError("Either you have not connected to the server, or you just need to refresh the page you're trying to access!")
         except socket.error:
-            raise RuntimeError("Your attempt to connect to the server failed! Either you've encountered a connection error, or the server is down!")
+            raise RuntimeError("Your attempt to connect to the server failed!")
 
     def send(self, message):
         try:
@@ -39,7 +38,6 @@ class Run:
             return True
         except socket.error:
             raise RuntimeError("Your attempt to send a message to the server failed!")
-
 
     def get_graph(self):
         self.send("get_graph")
@@ -83,7 +81,7 @@ class Run:
                 if hash(user_input) == phrase_hash:
                     return private_key, public_key, alphanumeric_address
                 else:
-                    print(f'Decryption failed!, hash of input: {hash(user_input)} does not match the hash of the keystore: {phrase_hash}')
+                    print(f'Decryption failed!, {hash(user_input)} does not match the hash of the keystore: {phrase_hash}')
 
     def get_balance(self, address):
         balance = 0
@@ -122,7 +120,7 @@ class Run:
                 "private_key": private_key
             }
             self.send(arguments)
-            time.sleep(2)
+            time.sleep(1.5)
             util.get_graph()
 
 
@@ -132,8 +130,10 @@ util = Run()
 
 @app.route("/", methods=['GET', 'POST'])
 def graph():
+    util.get_graph()    
+    time.sleep(0.25)
     util.get_graph()
-    time.sleep(0.1)
+    time.sleep(0.25)
     with open('user/graph.json', 'r') as f:
         serializable_format = dict(json.load(f))
     graph = sorted(serializable_format.items(), key=lambda x: x[1]["index"], reverse=True)
