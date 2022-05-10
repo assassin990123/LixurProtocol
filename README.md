@@ -12,13 +12,21 @@
 Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, feeless, theoretically infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
  
 ✅ Quantum Resistant Cryptography
+
 ✅ Directed Acyclic Graph
+
 ✅ Feeless
+
 ✅ Fast
+
 ✅ Theoretically Infinitely Scalable
+
 ❎ Smart Contracts
+
 ❎ Intelligent Contracts (A.I. Smart Contracts)
+
 ❎ Interconnected Multi-Chains
+
 ❎ Decentralized 
  
 ### The Testnet Beta is finally released!: 
