@@ -21,9 +21,9 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ✅ Theoretically Infinitely Scalable
 
-❎ Smart Contracts
+❎ Smart Contracts, NFTs, Tokens
 
-❎ Intelligent Contracts (A.I. Smart Contracts)
+❎ Intelligent Contracts (A.I. Smart Contracts), Intelligent NFTs.
 
 ❎ Interconnected Ecosystem
 
