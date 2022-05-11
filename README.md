@@ -25,7 +25,7 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ❎ Intelligent Contracts (A.I. Smart Contracts), Intelligent NFTs.
 
-❎ Interconnected Ecosystem
+❎ Interconnected Layer Ecosystem
 
 ❎ Decentralized 
  
