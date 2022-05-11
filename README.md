@@ -17,9 +17,9 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ✅ Feeless
 
-✅ Fast
+❎ Fast
 
-✅ Theoretically Infinitely Scalable
+❎ Theoretically Infinitely Scalable
 
 ❎ Smart Contracts, NFTs, Tokens
 
