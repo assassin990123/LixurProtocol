@@ -7,8 +7,8 @@
 ![image](https://img.shields.io/badge/version-0.0.1-blueviolet)
 ![image](https://img.shields.io/badge/type-Testnet%20Beta-informational)
 
-### Lixur has been postponed until further notice
-We are postponing development of Lixur until further notice. We've hit a wall where the things needed right now to continue, such as money, advertising, funding, developers, knowledge, etc. are all not here right now and I can't continue without these things. :/
+### Lixur is being re-written in Rust
+Performance under Python was bad (16 transactions per second tops) and raised major performance issues. Recoding in Rust.
 
 ### What is Lixur ?
 Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, feeless, theoretically infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
