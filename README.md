@@ -8,7 +8,7 @@
 ![image](https://img.shields.io/badge/type-Testnet%20Beta-informational)
 
 ### Lixur is being re-written in Rust
-Performance under Python was bad (16 transactions per second tops) and raised major performance issues. Recoding in Rust.
+Performance under Python was bad (16 transactions per second tops) and raised major performance issues, this utterly horrible performance could have also rooted from the fact that I didn't thread the transaction submission function, Recoding it in Rust nonetheless.
 
 ### What is Lixur ?
 Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, feeless, theoretically infinitely scalable, quantum resistant and an interconnected ecosystem, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
