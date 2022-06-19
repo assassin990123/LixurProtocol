@@ -73,15 +73,3 @@ So you want to contribute? Please, please join our Discord Server and our JetBra
 You could also submit a pull request (fork the code first) and introduce yourself, why you're interested in this project and promise us you'll join the Jetbrains and the Discord Servers. We need to keep in touch with all of our developers.
 
 ***If you find any bugs, or anything that should be added, initiate a pull request, add the issue to the repository page or email me personally at:*** `naisukhy@gmail.com`
-
----
-
-``Addressing a potential concern: For those examining the code and are concerned with the speed of Python, This code will soon feature a JIT Complier that will accelerate the code either with Numba, accelerating execution speed on par or even better than Go, C++ or Julia. Solving the speed dilemma. Here are some examples to illustrate this...``
-
-<br> ![image](https://user-images.githubusercontent.com/87288707/155394541-28719860-ac4e-4db8-97d4-c7c2980cb273.png)
-<br> ![image](https://user-images.githubusercontent.com/87288707/155394794-6cd735c6-93ea-41fc-abb3-844f90c60162.png)
-<br> ![image](https://user-images.githubusercontent.com/87288707/155395059-717c2782-cd2c-4974-bcc5-7c718c9a4561.png)
-<br> ![image](https://user-images.githubusercontent.com/87288707/155395258-632c6132-cb67-43b9-9d6c-c7021bdd2b17.png)
-
-#### Other Links
-* https://users.rust-lang.org/t/why-my-rust-code-is-10-times-slower-than-python-with-numba/57738
