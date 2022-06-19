@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 pqcrypto-dilithium = "0.4.5"
 sha2 = "0.10.2"
+pqcrypto-traits = "0.3.4"
