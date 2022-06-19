@@ -7,14 +7,16 @@ pub use pqcrypto_dilithium::dilithium5::secret_key_bytes as secret_key_bytes;
 pub use pqcrypto_dilithium::dilithium5::sign as dilithium_sign;
 pub use pqcrypto_dilithium::dilithium5::signature_bytes as signature_bytes;
 pub use pqcrypto_dilithium::dilithium5::verify_detached_signature as verify_detached_signature;
+pub use pqcrypto_traits::sign::PublicKey;
 
 fn hash_bytes(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> String {
     let mut hasher = Sha256::new();
-    hasher.update(bytes: pqcrypto_dilithium::dilithium5::PublicKey);
+    hasher.update(bytes.as_bytes());
     let result = hasher.finalize();
     return format!("{:x}", result).to_string();
 }
 
+#[allow(dead_code)]
 fn hash_string (string: &str) -> String {
     let mut hasher = Sha256::new();
     hasher.update(string);
@@ -30,5 +32,5 @@ fn generate_keypair () -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypto_d
 
 fn main() {
     let hexa_address = generate_keypair().2;
-    println!("Your Lixur address is: {}", hexa_address);
+    println!("Your Lixur Address: {}", hexa_address);
 }
