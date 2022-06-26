@@ -1,1 +1,0 @@
-This code is outdated, and a Python Implementation of the Testnet Beta that was released in May 2022, but got shut down due to performance issues (insufficient TPS).
