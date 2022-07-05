@@ -19,7 +19,7 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ✅ Feeless
 
-✅ Fast (Hitting at least a million transactions per second most of the time accouding to benchmarks, up to three million transactions per second)
+✅ Fast (Benchmarks indicate it can handle up to three million transactions per second, average speed is 1.1M to 1.7M transactions per second)
 
 ❎ Theoretically Infinitely Scalable
 
