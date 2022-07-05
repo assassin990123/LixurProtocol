@@ -7,5 +7,13 @@ edition = "2021"
 
 [dependencies]
 pqcrypto-dilithium = "0.4.5"
-sha2 = "0.10.2"
 pqcrypto-traits = "0.3.4"
+sha2 = "0.10.2"
+serde = {version = "1.0.138", features = ["derive"]}
+rand = "0.8.5"
+magic-crypt = "3.1.10"
+chrono = "0.4.19"
+
+[[bin]]
+name = "chain"
+path = "chain/chain.rs"
