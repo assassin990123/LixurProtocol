@@ -127,7 +127,6 @@ fn make_transaction <'a> (mut graph: Vec<(&'static str, Transaction)>, sender_ad
     let transaction = Transaction {sender_address: sender_address, receiver_address: receiver_address, amount: amount,
         index: generate_index(&graph), timestamp: Utc::now(), signature: signature, weight: edges_and_weights.2,
         edges: vec![edges_and_weights.0.1, edges_and_weights.1.1],};
-    is_valid_transaction(chain, transaction)
     graph.push((signature, transaction));
 }
 
