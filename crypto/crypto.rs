@@ -18,7 +18,7 @@ pub fn generate_keypair() -> (pqcrypto_dilithium::dilithium5::PublicKey,
     return (public_key, private_key, hash_public_key(public_key));
 }
 
-// Uses 
+// Generates a signature by using the private and public keys.
 pub fn sign_and_verify(private_key: &pqcrypto_dilithium::dilithium5::SecretKey, 
     public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> (Result<(), VerificationError>, String) {
     message = "Hello World".to_string();
@@ -27,6 +27,7 @@ pub fn sign_and_verify(private_key: &pqcrypto_dilithium::dilithium5::SecretKey,
     hash_signature(signature));
 }
 
+// Generates and returns a hashed version of a given public key.
 pub fn hash_public_key(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes.as_bytes());
@@ -34,6 +35,7 @@ pub fn hash_public_key(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> Stri
     return format!("{:x}", result).to_string();
 }
 
+// Generates and returns a hashed version of a given signature.
 pub fn hash_signature(bytes: &pqcrypto_dilithium::dilithium5::DetachedSignature) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes.as_bytes());
@@ -41,6 +43,7 @@ pub fn hash_signature(bytes: &pqcrypto_dilithium::dilithium5::DetachedSignature)
     return format!("{:x}", result).to_string();
 }
 
+// Generates and returns a hashed version of a given string.
 pub fn hash_string(string: &String) -> String {
     let mut hasher = Sha256::new();
     hasher.update(string);
@@ -48,6 +51,7 @@ pub fn hash_string(string: &String) -> String {
     return format!("{:x}", result).to_string();
 }
 
+// Generates and returns an 8 word phrase, each consisting of four letters.
 pub fn generate_phrase() -> String {
     let mut phrase = String::new();
     let mut file = File::open("crypto/words.txt").expect("Failed to open words.txt");
@@ -63,6 +67,7 @@ pub fn generate_phrase() -> String {
     return _phrase[.._phrase.len() - 1].to_string();
 }
 
+// Encrypts a given phrase using AES encryption. The user inputs their phrase, public key and private key and the program returns the encrypted phrase.
 pub fn magic_encrypt(phrase: &String, public_key: &pqcrypto_dilithium::dilithium5::PublicKey, 
     private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (String, pqcrypto_dilithium::dilithium5::PublicKey, String, String) {
     let salt = hash_string(&generate_phrase());
@@ -71,6 +76,7 @@ pub fn magic_encrypt(phrase: &String, public_key: &pqcrypto_dilithium::dilithium
     hash_string(&phrase_and_salt), salt);
 }
 
+// Decrypts a given phrase using AES decryption. The user inputs their phrase, hash of the phrase + salt, salt and ciphertext and the program returns the private key.
 pub fn magic_decrypt(phrase: &mut String, hash: &String, salt: &String, ciphertext: &String,) -> pqcrypto_dilithium::dilithium5::SecretKey {
     println!("Please insert your decryption phrase: ");
     loop {std::io::stdin().read_line(phrase).expect("Failed to read line");
@@ -85,7 +91,7 @@ pub fn magic_decrypt(phrase: &mut String, hash: &String, salt: &String, cipherte
     }
 }
 
-#[allow(unused_variables)]
+// Generates a keystore file for a user containing the wallet information crucial to retrieve their finds.
 pub fn generate_keystore() {
     println!("Generating keystore...");
     let (public_key, private_key, hex_address) = generate_keypair();
@@ -113,6 +119,7 @@ pub fn generate_keystore() {
     println!("It's suggested you copy it to multiple devices, especially a USB drive to make sure you never lose it.")
 }
 
+// Loads an existing keystore file for a user. The only parameter needed is the path to the keystore file.
 pub fn load_keystore(directory: &str) -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypto_dilithium::dilithium5::SecretKey, String) {
     println!("Loading keystore file...");
     let mut file = File::open(directory).expect("Failed to open the keystore file. This his could be due to it being corrupted");
@@ -140,6 +147,8 @@ pub fn load_keystore(directory: &str) -> (pqcrypto_dilithium::dilithium5::Public
     }
 }
 
+// The main function for booting and loading keystores. Think of this as a start menu for the program when it comes to wallets.
+// If a keystore exists, the function loads the wallet. If it doesn't, then a new one is created or it asks the user for the directory of the wallet.
 pub fn wallet(directory: &mut String) {
     if Path::new(directory).exists() {
         println!("Keystore file detected!");
