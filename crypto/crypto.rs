@@ -177,6 +177,4 @@ pub fn wallet(directory: &mut String) {
     }
 }
 
-fn main () {
-    // Nothing to do here...
-}
+fn main () {}
