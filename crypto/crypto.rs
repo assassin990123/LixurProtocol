@@ -1,30 +1,27 @@
-pub use pqcrypto_dilithium::dilithium5::*;
 pub use pqcrypto_dilithium::dilithium5::DetachedSignature;
 pub use pqcrypto_traits::sign::PublicKey;
 pub use pqcrypto_traits::sign::SecretKey;
 pub use pqcrypto_traits::sign::VerificationError;
 pub use pqcrypto_traits::sign::DetachedSignature as SignatureDetached;
 pub use magic_crypt::{new_magic_crypt, MagicCryptTrait, MagicCryptError};
-pub use std::collections::HashMap;
-pub use serde::ser::{SerializeTuple};
-pub use serde::{Serialize, Serializer, Deserialize, Deserializer};
-pub use serde::de::Visitor;
 pub use sha2::{Sha256, Digest};
 pub use std::io::Read;
 pub use std::path::Path;
 pub use std::io::Write;
-pub use std::time::Instant;
 pub use std::fs::File;
 pub use rand::Rng;
 
+// Generates and returns a random public key, a private key and an address.
 pub fn generate_keypair() -> (pqcrypto_dilithium::dilithium5::PublicKey, 
     pqcrypto_dilithium::dilithium5::SecretKey, String) {
     let (public_key, private_key) = keypair();
     return (public_key, private_key, hash_public_key(public_key));
 }
 
-pub fn sign_and_verify(message: &str, private_key: &pqcrypto_dilithium::dilithium5::SecretKey, 
+// Uses 
+pub fn sign_and_verify(private_key: &pqcrypto_dilithium::dilithium5::SecretKey, 
     public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> (Result<(), VerificationError>, String) {
+    message = "Hello World".to_string();
     let signature = &detached_sign(message.as_bytes(), private_key);
     return (verify_detached_signature(signature, message.as_bytes(), public_key),
     hash_signature(signature));
@@ -172,5 +169,5 @@ pub fn wallet(directory: &mut String) {
 }
 
 fn main () {
-    // Nothing
+    // Nothing to do here...
 }
