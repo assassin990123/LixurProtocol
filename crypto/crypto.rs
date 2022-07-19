@@ -171,7 +171,7 @@ pub fn wallet(directory: &mut String) {
                     println!("Wallet loaded successfully!");
                 }
             } else {
-                println!("Please enter either y or n.");
+                println!("Please enter either Yes or No.");
             }
         }
     }
