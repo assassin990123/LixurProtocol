@@ -2,7 +2,6 @@ use chrono::{DateTime, Utc};
 
 #[derive(Debug)]
 #[derive(Clone)]
-
 pub struct Transaction {
     pub sender_address: &'static str,
     pub receiver_address: &'static str,
@@ -19,7 +18,7 @@ impl ToString for Transaction {
         return format!("{}", self.sender_address);
     }
 }
-    
+
 pub struct Chain {
     pub transaction: Vec<(&'static str, Transaction)>,
 }
