@@ -151,6 +151,7 @@ fn select_edges_and_confirm_transactions <'a> (chain: &Vec<(&'static str, Transa
     return (tx_one, tx_two, cumulative);
 }
 
+// This function is used to create a transaction and add it to the chain.
 fn make_transaction (mut chain: Vec<(&'static str, Transaction)>, sender_address: &'static str, receiver_address: &'static str,
 amount: f64, signature: &'static str) {
     let chain_ref = &chain;
@@ -158,19 +159,7 @@ amount: f64, signature: &'static str) {
     let transaction = Transaction {sender_address: sender_address, receiver_address: receiver_address, amount: amount,
     index: generate_index(chain_ref), timestamp: Utc::now(), signature: signature, weight: edges_and_weights.2, 
     edges: vec![edges_and_weights.0.1, edges_and_weights.1.1],};
-    validate_and_append_transaction(chain, transaction);
-    
-    
+    validate_and_append_transaction(chain, transaction);  
 }
-// // Makes a transaction and puts it on the chain.
-// fn make_transaction <'a> (mut chain: &Vec<(&'static str, Transaction)>, sender_address: &'static str, receiver_address: &'static str,
-// amount: f64, signature: &'static str,) {
-//     let edges_and_weights = select_edges_and_confirm_transactions(chain.to_vec());
-//     let transaction = Transaction {sender_address: sender_address, receiver_address: receiver_address, amount: amount,
-//         index: generate_index(&chain), timestamp: Utc::now(), signature: signature, weight: edges_and_weights.2,
-//         edges: vec![edges_and_weights.0.1, edges_and_weights.1.1],};
-//     is_valid_transaction(&chain, transaction);
-//     *chain.push((signature, transaction));
-// }
 
 fn main () {}
