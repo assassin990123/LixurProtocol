@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub use rand::Rng;
 pub use chrono::Utc;
 pub use std::fs::File;
@@ -152,7 +154,7 @@ fn select_edges_and_confirm_transactions <'a> (chain: &Vec<(&'static str, Transa
 }
 
 // This function is used to create a transaction and add it to the chain.
-fn make_transaction (mut chain: Vec<(&'static str, Transaction)>, sender_address: &'static str, receiver_address: &'static str,
+fn make_transaction (chain: Vec<(&'static str, Transaction)>, sender_address: &'static str, receiver_address: &'static str,
 amount: f64, signature: &'static str) {
     let chain_ref = &chain;
     let edges_and_weights = select_edges_and_confirm_transactions(chain_ref);
