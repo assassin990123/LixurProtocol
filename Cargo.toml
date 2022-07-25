@@ -1,0 +1,19 @@
+[package]
+name = "project"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crypto = { path = "../crypto" }
+chrono = "0.4.19"
+sha2 = "0.10.2"
+thousands = "0.2.0"
+random_choice = "0.3.2"
+serde = { version = "1.0.140", features = ["derive"] }
+serde_json = "1.0.82"
+
+[[bin]]
+name = "chain"
+path = "src/chain.rs"

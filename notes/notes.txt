@@ -1,0 +1,2 @@
+Generate readable addresses once everything is operating properly.
+Also, allow proof of dedication for weights.

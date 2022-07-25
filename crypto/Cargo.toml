@@ -1,0 +1,17 @@
+[package]
+name = "project"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pqcrypto-dilithium = "0.4.5"
+pqcrypto-traits = "0.3.4"
+sha2 = "0.10.2"
+rand = "0.8.5"
+magic-crypt = "3.1.10"
+
+[[bin]]
+name = "crypto"
+path = "src/crypto.rs"
