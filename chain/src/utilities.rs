@@ -1,4 +1,3 @@
-// Transaction Type, Transaction Status, Readable Hash, Directory Index, Payload, Directory, Memo
 #[derive(Debug, Clone, PartialEq)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Transaction {
