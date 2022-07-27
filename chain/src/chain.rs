@@ -14,12 +14,13 @@ use std::path::Path;
 // use serde::ser::{Serializer};
 // use std::time::{Instant};
 // use thousands::Separable;
+// extern crate crypto;
+// use crypto::generate_keypair;
 
+use crypto::*;
 mod utilities;
-use crate::utilities::{Transaction, Chain};
+use utilities::{Transaction, Chain};
 
-extern mod crypto;
-use crypto::generate_keypair;
 
 // This function generates a random transaction ID.
 pub fn generate_tx_id () -> String {
@@ -172,12 +173,13 @@ fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, rece
 }
 
 // This function generates the first transactions to the chain.
-fn generate_chain_genesis_transactions (mut chain: Vec<(String, Transaction)>) {
-    for _z in 0..2 {
-        make_transaction
-    }
-}
+// fn generate_chain_genesis_transactions (mut chain: Vec<(String, Transaction)>) {
+//     for _z in 0..2 {
+//         // None
+//     }
+// }
 
 fn main() {
-   println!("{}" generate_keypair());
+    let key = generate_phrase();
+    println!("Your phrase is: {}", key);
 }

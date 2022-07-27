@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub use pqcrypto_dilithium::dilithium5::DetachedSignature;
 pub use pqcrypto_traits::sign::PublicKey;
 pub use pqcrypto_traits::sign::SecretKey;

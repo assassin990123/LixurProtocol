@@ -1,5 +1,5 @@
 [package]
-name = "project"
+name = "crypto"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,6 +11,10 @@ pqcrypto-traits = "0.3.4"
 sha2 = "0.10.2"
 rand = "0.8.5"
 magic-crypt = "3.1.10"
+
+[lib]
+name = "crypto"
+path = "src/crypto.rs"
 
 [[bin]]
 name = "crypto"
