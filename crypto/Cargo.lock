@@ -104,6 +104,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "crypto"
+version = "0.1.0"
+dependencies = [
+ "magic-crypt",
+ "pqcrypto-dilithium",
+ "pqcrypto-traits",
+ "rand",
+ "sha2 0.10.2",
+]
+
+[[package]]
 name = "crypto-common"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -267,17 +278,6 @@ name = "pqcrypto-traits"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97e91cb6af081c6daad5fa705f8adb0634c027662052cb3174bdf2957bf07e25"
-
-[[package]]
-name = "project"
-version = "0.1.0"
-dependencies = [
- "magic-crypt",
- "pqcrypto-dilithium",
- "pqcrypto-traits",
- "rand",
- "sha2 0.10.2",
-]
 
 [[package]]
 name = "rand"
