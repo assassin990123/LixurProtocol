@@ -182,7 +182,7 @@ fn generate_chain_genesis_transactions (chain: Vec<(String, Transaction)>) {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
         let signature = sign_and_verify(&keys_one.0, &keys_one.1);
-        make_transaction(chain.clone(), keys_one.2, keys_two.2, 0.0, "0x".to_owned() + &signature.1)
+        make_transaction(chain.clone(), keys_one.2, keys_two.2, 0.0, signature.1)
     }
 }
 
