@@ -118,15 +118,16 @@ fn is_valid_transaction (chain: &Vec<(String, Transaction)>, transaction: Transa
 }
 
 // This function selects the tips of the chain (the unconfirmed transactions) to confirm in a biased manner, prioritizing ones with higher weights.
-fn select_confirm_tips <'a> (chain: &Vec<(String, Transaction)>) -> Vec<(String, Transaction)> {
+fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>) -> Vec<(String, Transaction)> {
     let validation_count = 2;
     let mut unconfirmed: Vec<(String, Transaction)> = Vec::new();
     let mut valid: Vec<(String, Transaction)> = Vec::new();
     let mut weights: Vec<f64> = Vec::new();
 
-    for tx in chain.iter() {
+    for tx in chain.iter_mut() {
 
-        if tx.1.status == "unconfirmed" {
+        if tx.1.status != "confirmed" {
+            tx.1.status = "pending";
             unconfirmed.push(tx.clone());}}
         
     for tx in unconfirmed.iter() {
@@ -169,7 +170,7 @@ fn update_chain (chain: Vec<(String, Transaction)>) {
 // This function makes a transaction and adds it to the chain.
 fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
     let thread = thread::spawn (move || {
-    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"unconfirmed",
+    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
      weight:1.0, index: count_chain_length(&chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
     update_chain(chain);});
     thread.join().unwrap();
@@ -181,7 +182,7 @@ fn generate_chain_genesis_transactions (chain: Vec<(String, Transaction)>) {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
         let signature = sign_and_verify(&keys_one.0, &keys_one.1);
-        make_transaction(chain.clone(), keys_one.2, keys_two.2, 0.0, signature.1)
+        make_transaction(chain.clone(), keys_one.2, keys_two.2, 0.0, "0x".to_owned() + &signature.1)
     }
 }
 
