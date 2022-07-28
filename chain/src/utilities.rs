@@ -1,4 +1,4 @@
-// Transaction Type, Transaction Status, Readable Hash, Directory Index, Payload, Directory, Memo
+use std::time::{Duration};
 #[derive(Debug, Clone, PartialEq)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Transaction {
@@ -8,7 +8,7 @@ pub struct Transaction {
     pub signature: String, 
     pub status: &'static str,
     pub weight: f64,
-    pub timestamp: String,
+    pub timestamp: (String, Duration),
     pub edges: Vec<String>,
 }
 

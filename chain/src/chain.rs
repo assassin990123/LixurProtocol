@@ -167,17 +167,20 @@ fn update_chain (chain: Vec<(String, Transaction)>) {
 // This function makes a transaction and adds it to the chain.
 fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
     let thread = thread::spawn (move || {
-    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"unconfirmed", weight:1.0, timestamp: generate_rfc_2822_timestamp(), edges: vec![]}));
+    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"unconfirmed", weight:1.0, timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
     update_chain(chain);});
     thread.join().unwrap();
 }
 
 // This function generates the first transactions to the chain.
-// fn generate_chain_genesis_transactions (mut chain: Vec<(String, Transaction)>) {
-//     for _z in 0..2 {
-//         // None
-//     }
-// }
+fn generate_chain_genesis_transactions (mut chain: Vec<(String, Transaction)>) {
+    for _z in 0..2 {
+        let keys_one = generate_keypair();
+        let keys_two = generate_keypair();
+        let signature = sign_and_verify(&keys_one.0, &keys_one.1);
+        make_transaction(chain, keys_one.2, keys_two.2, 8.6, signature.1)
+    }
+}
 
 fn main() {
     let key = generate_phrase();

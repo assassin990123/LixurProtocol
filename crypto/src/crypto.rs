@@ -22,7 +22,7 @@ pub fn generate_keypair() -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypt
 }
 
 // This function takes a private and public key, signs them and returns a signature.
-pub fn sign_and_verify(private_key: &pqcrypto_dilithium::dilithium5::SecretKey, public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> (Result<(), VerificationError>, String) {
+pub fn sign_and_verify(public_key: &pqcrypto_dilithium::dilithium5::PublicKey, private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (Result<(), VerificationError>, String) {
     let message = "Lixur".to_string();
     let signature = &detached_sign(message.as_bytes(), private_key);
     return (verify_detached_signature(signature, message.as_bytes(), public_key),
