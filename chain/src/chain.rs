@@ -157,10 +157,11 @@ fn select_confirm_tips <'a> (chain: &Vec<(String, Transaction)>) -> Vec<(String,
 
 // This function updates the chain.
 fn update_chain (chain: Vec<(String, Transaction)>) {
-    if Path::new("main/chain.json").exists() {
-        OpenOptions::new().write(true).truncate(true).open("main/chain.json").unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).expect("Something went wrong.");
+    let directory = "chain/chain.json";
+    if Path::new(directory).exists() {
+        OpenOptions::new().write(true).truncate(true).open(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).expect("Something went wrong.");
     } else {
-    File::create("main/chain.json").unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).unwrap();
+    File::create(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).unwrap();
     }  
 }
 
@@ -173,16 +174,16 @@ fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, rece
 }
 
 // This function generates the first transactions to the chain.
-fn generate_chain_genesis_transactions (mut chain: Vec<(String, Transaction)>) {
-    for _z in 0..2 {
+fn generate_chain_genesis_transactions (chain: Vec<(String, Transaction)>) {
+    for _z in 0..3 {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
         let signature = sign_and_verify(&keys_one.0, &keys_one.1);
-        make_transaction(chain, keys_one.2, keys_two.2, 8.6, signature.1)
+        make_transaction(chain.clone(), keys_one.2, keys_two.2, 0.0, signature.1)
     }
 }
 
 fn main() {
-    let key = generate_phrase();
-    println!("Your phrase is: {}", key);
+    let chain = Chain::new();
+    generate_chain_genesis_transactions(chain);
 }
