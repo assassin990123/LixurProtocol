@@ -91,10 +91,6 @@ fn is_valid_transaction (chain: &Vec<(String, Transaction)>, transaction: Transa
     let sender = transaction.sender.clone();
     let receiver = transaction.receiver.clone();
 
-    if transaction.amount == 0.0 {
-        println!("You can't send 0 LXR");
-        return false;}
-
     if get_balance (&chain, &sender) < transaction.amount {
         return false;}
 
