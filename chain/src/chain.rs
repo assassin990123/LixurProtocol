@@ -40,6 +40,11 @@ fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> usize {
     return chain.len();
 }
 
+// This generates the index number for each transaction.
+fn generate_index (chain: &Vec<(String, Transaction)>) -> usize {
+    return count_chain_length(chain) + 1;
+}
+
 // Returns the number of times an address has made a transaction on the chain.
 fn get_appearances (chain: Vec<(String, Transaction)>, tx_id: String) -> usize {
     return chain.iter().filter(|i| i.0 == tx_id).count();
@@ -168,7 +173,8 @@ fn update_chain (chain: Vec<(String, Transaction)>) {
 // This function makes a transaction and adds it to the chain.
 fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
     let thread = thread::spawn (move || {
-    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"unconfirmed", weight:1.0, timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
+    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"unconfirmed",
+     weight:1.0, index: count_chain_length(&chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
     update_chain(chain);});
     thread.join().unwrap();
 }

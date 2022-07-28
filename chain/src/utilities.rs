@@ -9,6 +9,7 @@ pub struct Transaction {
     pub status: &'static str,
     pub weight: f64,
     pub timestamp: (String, Duration),
+    pub index: usize,
     pub edges: Vec<String>,
 }
 

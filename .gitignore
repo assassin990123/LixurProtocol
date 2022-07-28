@@ -1,6 +1,8 @@
 chain/target/
 crypto/target/
 main/target/
+notes/
+chain/chain/chain.json
 
 # If you have problems with .gitignore (where it doesn't ignore it), see this...
 # https://stackoverflow.com/questions/37677275/gitignore-didnt-ignore-files/73146346#73146346
