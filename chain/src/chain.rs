@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::thread;
 use random_choice::random_choice;
 use std::time::{SystemTime, Duration};
 use std::fs::OpenOptions;
@@ -158,7 +157,7 @@ fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>) -> Vec<(Str
 }
 
 // This function updates the chain.
-fn update_chain (chain: Vec<(String, Transaction)>) {
+fn update_chain (chain: &Vec<(String, Transaction)>) {
     let directory = "chain/chain.json";
     if Path::new(directory).exists() {
         OpenOptions::new().write(true).truncate(true).open(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).expect("Something went wrong.");
@@ -168,16 +167,14 @@ fn update_chain (chain: Vec<(String, Transaction)>) {
 }
 
 // This function makes a transaction and adds it to the chain.
-fn make_transaction (mut chain: Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
-    let thread = thread::spawn (move || {
+fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
     chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
      weight:1.0, index: count_chain_length(&chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
-    update_chain(chain);});
-    thread.join().unwrap();
+    update_chain(&chain);
 }
 
 // This function generates the first transactions to the chain.
-fn generate_chain_genesis_transactions (chain: Vec<(String, Transaction)>) {
+fn generate_chain_genesis_transactions (chain: &mut Vec<(String, Transaction)>) {
     for _z in 0..3 {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
@@ -187,6 +184,6 @@ fn generate_chain_genesis_transactions (chain: Vec<(String, Transaction)>) {
 }
 
 fn main() {
-    let chain = Chain::new();
-    generate_chain_genesis_transactions(chain);
+    let mut chain = Chain::new();
+    generate_chain_genesis_transactions(&mut chain);
 }
