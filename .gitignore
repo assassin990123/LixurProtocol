@@ -4,7 +4,8 @@
 chain/target/
 crypto/target/
 main/target/
+main/chain/
 notes/
-chain/chain/chain.json
+chain/chain/
 .gitignore
 notes/notes.txt
