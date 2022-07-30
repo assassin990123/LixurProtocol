@@ -83,6 +83,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "chain"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "crypto",
+ "random_choice",
+ "serde",
+ "serde_json",
+ "sha2 0.10.2",
+ "thousands",
+]
+
+[[package]]
 name = "chrono"
 version = "0.4.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -336,19 +349,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdcc2916cde080c1876ff40292a396541241fe0072ef928cd76582e9ea5d60d2"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "project"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "crypto",
- "random_choice",
- "serde",
- "serde_json",
- "sha2 0.10.2",
- "thousands",
 ]
 
 [[package]]
