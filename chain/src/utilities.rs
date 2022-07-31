@@ -7,10 +7,10 @@ pub struct Transaction {
     pub amount: f64,
     pub signature: String, 
     pub status: &'static str,
-    pub weight: f64,
+    pub weight: u32,
     pub timestamp: (String, Duration),
-    pub index: usize,
-    pub edges: Vec<String>,
+    pub index: u32,
+    pub edges: Vec<(String, String)>,
 }
 
 #[derive(Clone)]

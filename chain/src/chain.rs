@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 
-use random_choice::random_choice;
+use rand::distributions::WeightedIndex;
+use rand::distributions::Distribution;
+use rand::thread_rng;
 use std::time::{SystemTime, Duration};
 use std::fs::OpenOptions;
 use chrono::Utc;
@@ -8,6 +10,7 @@ use sha2::{Sha256, Digest};
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use std::time::Instant;
 
 use crypto::*;
 mod utilities;
@@ -28,12 +31,12 @@ pub fn generate_chain () -> Vec<(String, Transaction)> {
 }
 
 // This function returns the amount of transactions of a given chain.
-pub fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> usize {
-    return chain.len();
+pub fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> u32 {
+    return chain.len() as u32;
 }
 
 // This generates the index number for each transaction.
-pub fn generate_index (chain: &Vec<(String, Transaction)>) -> usize {
+pub fn generate_index (chain: &Vec<(String, Transaction)>) -> u32 {
     return count_chain_length(chain) + 1;
 }
 
@@ -110,44 +113,41 @@ pub fn is_valid_transaction (chain: &Vec<(String, Transaction)>, transaction: Tr
 }
 
 // This function selects the tips of the chain (the unconfirmed transactions) to confirm in a biased manner, prioritizing ones with higher weights.
-pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>) -> Vec<(String, Transaction)> {
+pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>) {
+    if chain.len() < 1 {
+        for x in chain.iter_mut() {
+            x.1.edges.push(("None".to_string(), "None".to_string()));}
+    } else { 
+    let time = Instant::now();
     let validation_count = 2;
     let mut unconfirmed: Vec<(String, Transaction)> = Vec::new();
     let mut valid: Vec<(String, Transaction)> = Vec::new();
-    let mut weights: Vec<f64> = Vec::new();
+    let mut selected: Vec<(String, Transaction)> = Vec::new();
+    let mut weights: Vec<u32> = Vec::new();
 
     for tx in chain.iter_mut() {
-
         if tx.1.status != "confirmed" {
-            tx.1.status = "pending";
-            unconfirmed.push(tx.clone());}}
-        
+            unconfirmed.push(tx.clone())}}
+    
     for tx in unconfirmed.iter() {
         if is_valid_transaction(chain, tx.1.clone()) == true {
             valid.push(tx.clone());
-            weights.push(tx.1.weight);}};
-
-    // Choose three random transactions from the valid vec, and select them based on their weights.
-    let mut selected: Vec<(String, Transaction)> = Vec::new();
-    let mut indexes = vec![];
-    let mut number: usize = 0;
-
-    for _x in valid.iter() {
-        number += 1;
-        indexes.push(number);}
-
-    let choices = random_choice().random_choice_f64(&indexes, &weights, validation_count);
+            weights.push(tx.1.weight.clone());
+        }}
     
-    for x in choices.iter() {
-        selected.push(valid[**x - 1].clone());}
+    let dist = WeightedIndex::new(&weights).unwrap();
+    let mut rng = thread_rng();
+    for _ in 0..validation_count {
+        selected.push(valid[dist.sample(&mut rng)].clone())}
 
-    for x in selected.iter_mut() {
-        x.1.edges.push(x.0.clone());
-        x.1.status = "confirmed";}
-
-    return selected;
-
-}
+    for tx in selected.iter_mut() {
+        tx.1.edges.push((selected[0].0.clone(), selected[1].0.clone()));
+        tx.1.status = "confirmed";
+        for x in chain.iter_mut() {
+            if x.0 == tx.0 {
+                x.1 = tx.1.clone()}}
+}}}
+    
 
 // This function updates the chain.
 pub fn update_chain (chain: &Vec<(String, Transaction)>) {
@@ -161,11 +161,20 @@ pub fn update_chain (chain: &Vec<(String, Transaction)>) {
 
 // This function makes a transaction and adds it to the chain.
 pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
+    select_confirm_tips(chain);
     chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
-     weight:1.0, index: count_chain_length(&chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
+     weight:generate_index(chain), index: generate_index(chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp()), edges: vec![]}));
     update_chain(&chain);
 }
 
+// Generates a completely random transaction to the chain.
+pub fn generate_random_transaction (chain: &mut Vec<(String, Transaction)>) {
+    let keys_one = generate_keypair();
+    let keys_two = generate_keypair();
+    let signature = sign_and_verify(&keys_one.0, &keys_one.1);
+    make_transaction(chain, keys_one.2, keys_two.2, 0.0, signature.1);
+}
+    
 // This function generates the first transactions to the chain.
 pub fn generate_genesis_transactions (chain: &mut Vec<(String, Transaction)>) {
     for _z in 0..3 {
