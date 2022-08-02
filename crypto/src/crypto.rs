@@ -111,6 +111,7 @@ pub fn decrypt_signature (ciphertext: String) -> DetachedSignature {
     return DetachedSignature::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
 }
 
+// Decrypts a given public key using AES decryption. The function returns a decrypted public key.
 pub fn decrypt_public_key (ciphertext: String) -> pqcrypto_dilithium::dilithium5::PublicKey {
     return pqcrypto_dilithium::dilithium5::PublicKey::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
 }
