@@ -26,6 +26,7 @@ pub fn sign (private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> Detache
     return detached_sign("Lixur".to_string().as_bytes(), private_key)
 }
 
+// This function verifies the legitimacy of a signature.
 pub fn verify (signature: DetachedSignature, public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> bool {
     let result = verify_detached_signature(&signature, "Lixur".to_string().as_bytes(), public_key);
     if result.is_ok() {
@@ -98,7 +99,7 @@ pub fn decrypt_wallet(phrase: &mut String, hash: &String, salt: &String, ciphert
     }
 }
 
-// Encrypts a given signature using AES encryption. The function returns an encrypted signature.
+// Encrypts a given signature and public key using AES encryption. The function returns both values, in an encrypted manner.
 pub fn encrypt_signature_and_public_key (signature: DetachedSignature, public_key: pqcrypto_dilithium::dilithium5::PublicKey) -> (String, String) {
     let signature_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(signature.as_bytes());
     let public_key_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(public_key.as_bytes());
