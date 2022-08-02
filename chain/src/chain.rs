@@ -177,7 +177,7 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
             if tx.1.validators.len() == validation_count {tx.1.status = "confirmed"}
         } return (chain[0].0.clone(), "None".to_string())
 
-    // Else, it will have to have x number of edges, which is determined by the number the variable "validation_count".    // 
+    // Else, it will have to have x number of edges, which is determined by the number the variable "validation_count".
     } else { 
     
     // Initializing all of the necessary vectors.
