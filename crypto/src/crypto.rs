@@ -22,11 +22,17 @@ pub fn generate_keypair() -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypt
 }
 
 // This function takes a private and public key, signs them and returns a signature.
-pub fn sign_and_verify(public_key: &pqcrypto_dilithium::dilithium5::PublicKey, private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (Result<(), VerificationError>, String) {
-    let message = "Lixur".to_string();
-    let signature = &detached_sign(message.as_bytes(), private_key);
-    return (verify_detached_signature(signature, message.as_bytes(), public_key),
-    hash_signature(signature));
+pub fn sign (private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> DetachedSignature {
+    return detached_sign("Lixur".to_string().as_bytes(), private_key)
+}
+
+pub fn verify (signature: DetachedSignature, public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> bool {
+    let result = verify_detached_signature(&signature, "Lixur".to_string().as_bytes(), public_key);
+    if result.is_ok() {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // This function hashes and returns a hashed string of a given public key using the SHA256 algorithm.
@@ -38,9 +44,9 @@ pub fn hash_public_key(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> Stri
 }
 
 // This function hashes and returns a hashed string of a given signature using the SHA256 algorithm.
-pub fn hash_signature(bytes: &pqcrypto_dilithium::dilithium5::DetachedSignature) -> String {
+pub fn hash_encrypted_signature(encrypted_signature: String) -> String {
     let mut hasher = Sha256::new();
-    hasher.update(bytes.as_bytes());
+    hasher.update(encrypted_signature.as_bytes());
     let result = hasher.finalize();
     return format!("{:x}", result).to_string();
 }
@@ -70,7 +76,7 @@ pub fn generate_phrase() -> String {
 }
 
 // Encrypts a given phrase using AES encryption. The user inputs their phrase, public key and private key and the program returns the encrypted phrase.
-pub fn magic_encrypt(phrase: &String, public_key: &pqcrypto_dilithium::dilithium5::PublicKey, private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (String, pqcrypto_dilithium::dilithium5::PublicKey, String, String) {
+pub fn encrypt_wallet(phrase: &String, public_key: &pqcrypto_dilithium::dilithium5::PublicKey, private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (String, pqcrypto_dilithium::dilithium5::PublicKey, String, String) {
     let salt = hash_string(&generate_phrase());
     let phrase_and_salt = phrase.to_owned() + &salt;
     return (new_magic_crypt!(&phrase_and_salt, 256).encrypt_bytes_to_base64(private_key.as_bytes()), *public_key,
@@ -78,7 +84,7 @@ pub fn magic_encrypt(phrase: &String, public_key: &pqcrypto_dilithium::dilithium
 }
 
 // Decrypts a given phrase using AES decryption. The user inputs their phrase, hash of the phrase + salt, salt and ciphertext and the program returns the private key.
-pub fn magic_decrypt(phrase: &mut String, hash: &String, salt: &String, ciphertext: &String,) -> pqcrypto_dilithium::dilithium5::SecretKey {
+pub fn decrypt_wallet(phrase: &mut String, hash: &String, salt: &String, ciphertext: &String) -> pqcrypto_dilithium::dilithium5::SecretKey {
     println!("Please insert your decryption phrase: ");
     loop {std::io::stdin().read_line(phrase).expect("Failed to read line");
         *phrase = phrase.replace("\r", "").replace("\n", "")[..phrase.len() - 41].to_string() + salt;
@@ -92,6 +98,22 @@ pub fn magic_decrypt(phrase: &mut String, hash: &String, salt: &String, cipherte
     }
 }
 
+// Encrypts a given signature using AES encryption. The function returns an encrypted signature.
+pub fn encrypt_signature_and_public_key (signature: DetachedSignature, public_key: pqcrypto_dilithium::dilithium5::PublicKey) -> (String, String) {
+    let signature_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(signature.as_bytes());
+    let public_key_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(public_key.as_bytes());
+    return (signature_cipher, public_key_cipher);
+}
+
+// Decrypts a given signature using AES decryption. The function returns a decrypted signature.
+pub fn decrypt_signature (ciphertext: String) -> DetachedSignature {
+    return DetachedSignature::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
+}
+
+pub fn decrypt_public_key (ciphertext: String) -> pqcrypto_dilithium::dilithium5::PublicKey {
+    return pqcrypto_dilithium::dilithium5::PublicKey::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
+}
+
 // This function generates a keystore file for a user containing the wallet information, which is paramount to be able to access their account.
 pub fn generate_keystore() {
     println!("Generating keystore...");
@@ -100,7 +122,7 @@ pub fn generate_keystore() {
     println!("Your address on Lixur is: {}", hash_public_key(public_key));
     println!("Your phrase is: {}. Make sure you save this somewhere and do not share it with anyone! If you lose the phrase
     you will also lose access to all of your funds.", phrase);
-    let (ciphertext, public_key, hash, salt) = magic_encrypt(&phrase, &public_key, &private_key);
+    let (ciphertext, public_key, hash, salt) = encrypt_wallet(&phrase, &public_key, &private_key);
     let mut file = File::create("keystore.txt").expect("Failed to create the keystore file.");
     file.write_all(&ciphertext.as_bytes()).expect("Failed to write the ciphertext to the keystore file.");
     file.write(b"\n").expect("Failed to write a newline to the keystore file.");
@@ -140,7 +162,7 @@ pub fn load_keystore(directory: &str) -> (pqcrypto_dilithium::dilithium5::Public
         phrase_and_salt.push_str(&salt);
         if hash_string(&phrase_and_salt) == hash {
             println!("Success! You've entered the correct phrase, decrypting...");
-            let private_key = magic_decrypt(&mut phrase, &hash, &salt, &ciphertext);
+            let private_key = decrypt_wallet(&mut phrase, &hash, &salt, &ciphertext);
             let public_key = pqcrypto_dilithium::dilithium5::PublicKey::from_bytes(&public_key.as_bytes()).unwrap();
             let hex_address = hash_public_key(public_key);
             return (public_key, private_key, hex_address);

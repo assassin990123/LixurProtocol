@@ -1,10 +1,10 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, PartialEq)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Transaction {
     pub sender: String,
     pub receiver: String,
     pub amount: f64,
-    pub signature: String, 
+    pub signature: (String, String), 
     pub status: &'static str,
     pub transaction_type: &'static str,
     pub readable_hash: String,

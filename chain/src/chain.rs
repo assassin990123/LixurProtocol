@@ -10,6 +10,7 @@ use sha2::{Sha256, Digest};
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use std::time::Instant;
 
 use crypto::*;
 mod utilities;
@@ -89,40 +90,72 @@ pub fn does_address_exist (chain: &Vec<(String, Transaction)>, address: String) 
 }
 
 // This function checks if a transaction is a valid transaction and returns the result, either true or false.
-pub fn is_valid_transaction (chain: &Vec<(String, Transaction)>, transaction: Transaction) -> bool {
+pub fn is_valid_transaction (chain: &Vec<(String, Transaction)>, mut transaction: Transaction) -> bool {
     let sender = transaction.sender.clone();
     let receiver = transaction.receiver.clone();
 
+    // If the user doesn't have enough money, then the transaction is marked as failed.
     if get_balance (&chain, &sender) < transaction.amount {
+        transaction.status = "failed";
         return false;}
 
+    // If the user tries to send negative amounts of money, the transaction is marked as failed.
     if transaction.amount < 0.0 {
         println!("You can't send negative quantities of LXR");
+        transaction.status = "failed";
         return false;}
 
+    // If the user tries to send themselves money, the transaction is marked as failed.
     if &sender == &receiver {
         println!("You can't send LXR to yourself");
-        return false;}
-
-    if transaction.signature.len() != 64 {
-        println!("Invalid signature");
+        transaction.status = "failed";
         return false;}
     
-    if does_address_exist(chain, transaction.receiver) == false {
-        println!("The receiver's address does not exist on the chain");
+    // If the user ties to send fake or invalid signatures, the transaction is marked as failed.
+    if verify(decrypt_signature(transaction.signature.0),
+    &decrypt_public_key(transaction.signature.1)) != true {
+        println!("The signature is invalid");
+        transaction.status = "failed";
         return false;}
     
-    if does_address_exist(chain, transaction.sender) == false {
-        println!("Your address does not exist on the chain");
-        return false;}
+    // If the person the user is trying to send LXR to doesn't exist, the transaction is marked as failed.
+    // if does_address_exist(chain, transaction.receiver) == false {
+    //     transaction.status = "failed";
+    //     println!("The receiver's address does not exist on the chain");
+    //     return false;}
+    
+    // If the user's address is not on the chain, the transaction is marked as failed.
+    // if does_address_exist(chain, transaction.sender) == false {
+    //     transaction.status = "failed";
+    //     println!("Your address does not exist on the chain");
+    //     return false;}
 
     else {return true;}
 }
 
+// If a transaction hasn't been validated for x amount of time, it will be marked as failed.
+pub fn declare_failed_transaction (chain: &mut Vec<(String, Transaction)>) {
+    let hours = 3600.0*24.0; // 24 hours in seconds
+    loop {
+    for tx in chain.iter_mut() {
+        // Get the current time in unix timestamp format.
+        let current_unix_timestamp = generate_unix_timestamp().as_secs_f64();
+        // If a transaction has been labeled as "pending" for more than 24 hours, it will be marked as "failed".
+        if tx.1.status == "pending" && current_unix_timestamp - tx.1.timestamp.1 > hours  {
+            println!("Transaction {} failed", tx.0);
+                tx.1.status = "failed";
+            }
+        }
+    update_chain(chain);
+    }
+}
+
 // This function selects the tips of the chain (the unconfirmed transactions) to confirm in a biased manner, prioritizing ones with higher weights.
-pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signature: String) -> (String, String) {
+pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signature: (String, String))-> (String, String) {
+    let time = Instant::now();
     // All of the vectors and variables are initialized here.
     let validation_count = 2;
+    let signature = hash_encrypted_signature(signature.0);
 
     // If the chain is empty, this transaction won't have any edges.
     if chain.len() == 0 {
@@ -197,12 +230,13 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
             if x.0 == tx.0 {
                 x.1 = tx.1.clone()}}}
     // The edges are returned to be added to the current transaction performing the tip selection.
+    println!("Tip selection took {} seconds", time.elapsed().as_secs_f64());
     return edges;   
     }
 }
 
 // This function updates the chain.
-pub fn update_chain (chain: &Vec<(String, Transaction)>) {
+pub fn update_chain (chain: &mut Vec<(String, Transaction)>) {
     let directory = "chain/chain.json";
     if Path::new(directory).exists() {
         OpenOptions::new().write(true).truncate(true).open(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).expect("Something went wrong.");
@@ -212,20 +246,20 @@ pub fn update_chain (chain: &Vec<(String, Transaction)>) {
 }
 
 // This function makes a transaction and adds it to the chain.
-pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: String) {
+pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: (String, String)) {
     let edges = select_confirm_tips(chain, signature.clone());
     chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
     weight:1, index: generate_index(chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp().as_secs_f64()), edges: vec![edges],
     transaction_type: "transaction", readable_hash: "None".to_string(), validators: vec![]}));
-    update_chain(&chain)
+    update_chain(chain)
 }
 
 // Generates a completely random transaction to the chain.
 pub fn generate_random_transaction (chain: &mut Vec<(String, Transaction)>) {
     let keys_one = generate_keypair();
     let keys_two = generate_keypair();
-    let signature = sign_and_verify(&keys_one.0, &keys_one.1);
-    make_transaction(chain, keys_one.2, keys_two.2, 0.0, signature.1);
+    let signature = sign(&keys_one.1);
+    make_transaction(chain, keys_one.2, keys_two.2, 0.0, encrypt_signature_and_public_key(signature, keys_one.0));
 }
 
 // This function generates the first transactions to the chain.
@@ -234,9 +268,20 @@ pub fn generate_genesis_transactions (chain: &mut Vec<(String, Transaction)>) {
     for _z in 0..validation_count {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
-        let signature = sign_and_verify(&keys_one.0, &keys_one.1);
-        make_transaction(chain, keys_one.2, keys_two.2, 0.0, signature.1);
+        let signature = sign(&keys_one.1);
+        make_transaction(chain, keys_one.2, keys_two.2, 0.0, encrypt_signature_and_public_key(signature, keys_one.0));
     }
+}
+
+// Initates the chain and generates the first transactions.
+pub fn initiate_chain () {
+    let chain = &mut generate_chain();
+    let generation_number = 1;
+    generate_genesis_transactions(chain);
+    for _x in 0..generation_number {
+        generate_random_transaction(chain);
+    }
+    // declare_failed_transaction(chain);
 }
 
 fn main() {}
