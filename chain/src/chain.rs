@@ -28,19 +28,25 @@ pub fn generate_chain () -> Vec<(String, Transaction)> {
     return Chain::new();
 }
 
-// This function returns the amount of transactions of a given chain.
+// This function returns the amount of transactions on the chain.
 pub fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> u32 {
     return chain.len() as u32;
+}
+
+// This function returns the amount of confirmed transactions on the chain.
+pub fn count_confirmed_chain_length (chain: &Vec<(String, Transaction)> ) -> u32 {
+    let mut count = 0;
+    for (_, tx) in chain.iter() {
+        if tx.status == "confirmed" {
+            count += 1;
+        }
+    }
+    return count;
 }
 
 // This generates the index number for each transaction.
 pub fn generate_index (chain: &Vec<(String, Transaction)>) -> u32 {
     return count_chain_length(chain) + 1;
-}
-
-// Returns the number of times an address has made a transaction on the chain.
-pub fn get_appearances (chain: Vec<(String, Transaction)>, tx_id: String) -> usize {
-    return chain.iter().filter(|i| i.0 == tx_id).count();
 }
 
 // This function generates and returns a Unix timestamp, which is the number of seconds since January 1, 1970, at midnight in UTC tim.
@@ -57,6 +63,7 @@ pub fn generate_rfc_2822_timestamp () -> String {
 pub fn get_balance (chain: &Vec<(String, Transaction)>, address: &String) -> f64 {
     let mut balance = 0.0;
     for transaction in chain.iter() {
+        if transaction.1.status == "confirmed" {
         if &transaction.1.sender == address && &transaction.1.receiver == address {
             balance += transaction.1.amount;
         }
@@ -64,6 +71,7 @@ pub fn get_balance (chain: &Vec<(String, Transaction)>, address: &String) -> f64
             balance -= transaction.1.amount;
         } else if &transaction.1.receiver == address {
             balance += transaction.1.amount;
+            }
         }
     }
     return balance;
@@ -73,9 +81,10 @@ pub fn get_balance (chain: &Vec<(String, Transaction)>, address: &String) -> f64
 pub fn does_address_exist (chain: &Vec<(String, Transaction)>, address: String) -> bool {
     let mut exists = false;
     for tx in chain.iter() {
+        if tx.1.status == "confirmed" {
         if tx.1.sender == address || tx.1.receiver == address {
             exists = true;}
-        }
+        }}
     return exists;
 }
 
