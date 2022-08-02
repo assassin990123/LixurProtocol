@@ -10,7 +10,6 @@ use sha2::{Sha256, Digest};
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use std::time::Instant;
 
 use crypto::*;
 mod utilities;
@@ -152,7 +151,8 @@ pub fn declare_failed_transaction (chain: &mut Vec<(String, Transaction)>) {
 
 // This function selects the tips of the chain (the unconfirmed transactions) to confirm in a biased manner, prioritizing ones with higher weights.
 pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signature: (String, String))-> (String, String) {
-    let time = Instant::now();
+    // This usually takes a few milliseconds to perform, on faster PCs, it can be a few microseconds even.
+
     // All of the vectors and variables are initialized here.
     let validation_count = 2;
     let signature = hash_encrypted_signature(signature.0);
@@ -232,7 +232,6 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
                 x.1 = tx.1.clone()}}}
 
     // The edges are returned to be added to the current transaction performing the tip selection.
-    println!("Tip selection took {} seconds", time.elapsed().as_secs_f64());
     return edges;   
     }
 }
