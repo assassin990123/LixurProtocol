@@ -25,13 +25,13 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ❎ Human Readable Addresses
 
-❎ Smart Contracts, NFTs, Tokens
-
-❎ Intelligent Contracts (A.I. Smart Contracts), Intelligent NFTs
+❎ Decentralized 
 
 ❎ Interconnected Layer Ecosystem with customizable subchains
 
-❎ Decentralized 
+❎ Smart Contracts, NFTs, Tokens
+
+❎ Intelligent Contracts (A.I. Smart Contracts), Intelligent NFTs
 
 ❎ No Code SDK
  
