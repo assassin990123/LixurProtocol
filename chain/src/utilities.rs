@@ -1,4 +1,3 @@
-use std::time::{Duration};
 #[derive(Debug, Clone, PartialEq)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Transaction {
@@ -7,10 +6,13 @@ pub struct Transaction {
     pub amount: f64,
     pub signature: String, 
     pub status: &'static str,
+    pub transaction_type: &'static str,
+    pub readable_hash: String,
     pub weight: u32,
-    pub timestamp: (String, Duration),
+    pub timestamp: (String, f64),
     pub index: u32,
     pub edges: Vec<(String, String)>,
+    pub validators: Vec<String>,
 }
 
 #[derive(Clone)]
@@ -23,4 +25,3 @@ impl Chain {
         return Vec::new();
     }
 }
-
