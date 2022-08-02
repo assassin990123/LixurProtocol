@@ -29,12 +29,12 @@ pub fn generate_chain () -> Vec<(String, Transaction)> {
 }
 
 // This function returns the amount of transactions on the chain.
-pub fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> u32 {
-    return chain.len() as u32;
+pub fn count_chain_length (chain: &Vec<(String, Transaction)> ) -> u128 {
+    return chain.len() as u128;
 }
 
 // This function returns the amount of confirmed transactions on the chain.
-pub fn count_confirmed_chain_length (chain: &Vec<(String, Transaction)> ) -> u32 {
+pub fn count_confirmed_chain_length (chain: &Vec<(String, Transaction)> ) -> u128 {
     let mut count = 0;
     for (_, tx) in chain.iter() {
         if tx.status == "confirmed" {
@@ -45,7 +45,7 @@ pub fn count_confirmed_chain_length (chain: &Vec<(String, Transaction)> ) -> u32
 }
 
 // This generates the index number for each transaction.
-pub fn generate_index (chain: &Vec<(String, Transaction)>) -> u32 {
+pub fn generate_index (chain: &Vec<(String, Transaction)>) -> u128 {
     return count_chain_length(chain) + 1;
 }
 
@@ -149,31 +149,34 @@ pub fn declare_failed_transaction (chain: &mut Vec<(String, Transaction)>) {
     }
 }
 
-// This function selects the tips of the chain (the unconfirmed transactions) to confirm in a biased manner, prioritizing ones with higher weights.
-pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signature: (String, String))-> (String, String) {
+// This function selects other unconfirmed transactions to confirm in a biased manner, prioritizing ones with higher weights.
+pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, id: String, own_weight: u128)-> (String, String) {
     // This usually takes a few milliseconds to perform, on faster PCs, it can be a few microseconds even.
 
     // All of the vectors and variables are initialized here.
     let validation_count = 2;
-    let signature = hash_encrypted_signature(signature.0);
 
     // If the chain is empty, this transaction won't have any edges.
     if chain.len() == 0 {
         return ("None".to_string(), "None".to_string())} 
+
+    // def update_cumulative_weights(self, transaction, confirmed_transactions):
+    //     graph = self.graph
+    //     for key in graph:
+    //         if key in confirmed_transactions:
+    //             a = graph[key]
+    //             self_cumulative_weight = transaction.cumulative_weight
+    //             tip_cumulative_weight = a.cumulative_weight
+    //             a.cumulative_weight = self_cumulative_weight + tip_cumulative_weight
     
-    // If the chain only has one transaction, the transaction will only have one edge. We must also validate the genesis transaction.
+    // If the chain only has the genesis transaction, that will be the one we will validate.
     if chain.len() == 1 {
         for tx in chain.iter_mut() {
-            // We first check if the genesis transaction is valid, if it is, we continue. If not, we panic.
-            // We will edit the transaction's validators (A validator will use it's signature). If it doesn't have any, it will only add one validator.
-            if tx.1.validators.len() == 0 {
-                tx.1.validators.push(signature.clone())
-
-            // Else, if it has one validator, we will add another.
-            } else {
-                tx.1.validators.push(signature.clone())}
+            // We will add ourselves as the validator of this transaction, and will edit the (cumulative) weight of the transaction.
+                tx.1.validators.push(id.clone());
+                tx.1.weight = tx.1.weight + own_weight;
     
-            // The transaction's status will be set to "confirmed", if it has two validators else, its status doesn't change.
+            // The transaction's status will be set to "confirmed" if it has two validators otherwise, its status doesn't change.
             if tx.1.validators.len() == validation_count {tx.1.status = "confirmed"}
         } return (chain[0].0.clone(), "None".to_string())
 
@@ -184,7 +187,7 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
     let mut unconfirmed: Vec<(String, Transaction)> = Vec::new();
     let mut valid: Vec<(String, Transaction)> = Vec::new();
     let mut selected: Vec<(String, Transaction)> = Vec::new();
-    let mut weights: Vec<u32> = Vec::new();
+    let mut weights: Vec<u128> = Vec::new();
 
     // This for loop adds all the unconfirmed transactions to the unconfirmed vector.
     for tx in chain.iter_mut() {
@@ -215,18 +218,14 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
     let edges = (selected[0].0.clone(), selected[1].0.clone());
     for tx in selected.iter_mut() {
 
-        // We will edit the transaction's validators (A validator will use it's signature), If it doesn't have any, it will only add one validator.
-        if tx.1.validators.len() == 0 {
-            tx.1.validators.push(signature.clone())}
+        // We will add ourselves as the validator of this transaction, and will edit the (cumulative) weight of the transaction.
+            tx.1.validators.push(id.clone());
+            tx.1.weight = tx.1.weight + own_weight;
 
-        // Else, if it has one validator, it will add another.
-        else {
-            tx.1.validators.push(signature.clone())}
-
-        // The transaction's status is now confirmed.
+        // The transaction's status will be set to "confirmed" if it has two validators otherwise, its status doesn't change.
         if tx.1.validators.len() == 2 {tx.1.status = "confirmed"}
 
-        // The transaction is now updated with the changes
+        // The transaction is now updated with the changes. 
         for x in chain.iter_mut() {
             if x.0 == tx.0 {
                 x.1 = tx.1.clone()}}}
@@ -252,13 +251,15 @@ pub fn update_chain (chain: &mut Vec<(String, Transaction)>) {
 }
 
 // This function makes a transaction and adds it to the chain.
-pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: (String, String)) {
+pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, id: String, sender: String, receiver: String, amount: f64, signature: (String, String)) {
+    // We initialize the weight of this transaction.
+    let own_weight = 1;
 
     // We gather the edges of the transaction being made.
-    let edges = select_confirm_tips(chain, signature.clone());
+    let edges = select_confirm_tips(chain, id.clone(), own_weight as u128);
 
-    // We add the transaction to the chain
-    chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
+    // We add the transaction to the chain.
+    chain.push((id.clone(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
     weight:1, index: generate_index(chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp().as_secs_f64()), edges: vec![edges],
     transaction_type: "transaction", readable_hash: "None".to_string(), validators: vec![]}));
 
@@ -271,7 +272,8 @@ pub fn generate_random_transaction (chain: &mut Vec<(String, Transaction)>) {
     let keys_one = generate_keypair();
     let keys_two = generate_keypair();
     let signature = sign(&keys_one.1);
-    make_transaction(chain, keys_one.2, keys_two.2, 0.0, encrypt_signature_and_public_key(signature, keys_one.0));
+    make_transaction(chain, generate_tx_id(), keys_one.2, keys_two.2, 0.0,
+    encrypt_signature_and_public_key(signature, keys_one.0));
 }
 
 // This function generates the first transactions to the chain.
@@ -281,7 +283,8 @@ pub fn generate_genesis_transactions (chain: &mut Vec<(String, Transaction)>) {
         let keys_one = generate_keypair();
         let keys_two = generate_keypair();
         let signature = sign(&keys_one.1);
-        make_transaction(chain, keys_one.2, keys_two.2, 0.0, encrypt_signature_and_public_key(signature, keys_one.0));
+        make_transaction(chain, generate_tx_id(), keys_one.2, keys_two.2, 0.0,
+        encrypt_signature_and_public_key(signature, keys_one.0));
     }
 }
 

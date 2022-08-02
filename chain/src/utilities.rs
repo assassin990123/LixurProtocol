@@ -8,9 +8,9 @@ pub struct Transaction {
     pub status: &'static str,
     pub transaction_type: &'static str,
     pub readable_hash: String,
-    pub weight: u32,
+    pub weight: u128,
     pub timestamp: (String, f64),
-    pub index: u32,
+    pub index: u128,
     pub edges: Vec<(String, String)>,
     pub validators: Vec<String>,
 }

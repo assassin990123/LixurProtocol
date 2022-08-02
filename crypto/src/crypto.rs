@@ -45,15 +45,15 @@ pub fn hash_public_key(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> Stri
 }
 
 // This function hashes and returns a hashed string of a given signature using the SHA256 algorithm.
-pub fn hash_encrypted_signature(encrypted_signature: String) -> String {
+pub fn hash_signature (signature: DetachedSignature) -> String {
     let mut hasher = Sha256::new();
-    hasher.update(encrypted_signature.as_bytes());
+    hasher.update(signature.as_bytes());
     let result = hasher.finalize();
     return format!("{:x}", result).to_string();
 }
 
 // This function hashes and returns a hashed string of a given signature using the SHA256 algorithm.
-pub fn hash_string(string: &String) -> String {
+pub fn hash_string (string: &String) -> String {
     let mut hasher = Sha256::new();
     hasher.update(string);
     let result = hasher.finalize();
