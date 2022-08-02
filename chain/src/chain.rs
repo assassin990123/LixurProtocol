@@ -226,9 +226,11 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
         // The transaction's status is now confirmed.
         if tx.1.validators.len() == 2 {tx.1.status = "confirmed"}
 
+        // The transaction is now updated with the changes
         for x in chain.iter_mut() {
             if x.0 == tx.0 {
                 x.1 = tx.1.clone()}}}
+                
     // The edges are returned to be added to the current transaction performing the tip selection.
     println!("Tip selection took {} seconds", time.elapsed().as_secs_f64());
     return edges;   
