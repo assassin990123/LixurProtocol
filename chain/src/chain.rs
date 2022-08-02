@@ -230,7 +230,7 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
         for x in chain.iter_mut() {
             if x.0 == tx.0 {
                 x.1 = tx.1.clone()}}}
-                
+
     // The edges are returned to be added to the current transaction performing the tip selection.
     println!("Tip selection took {} seconds", time.elapsed().as_secs_f64());
     return edges;   
@@ -240,19 +240,30 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, signatu
 // This function updates the chain.
 pub fn update_chain (chain: &mut Vec<(String, Transaction)>) {
     let directory = "chain/chain.json";
+    
+    // If the file exists, we will edit it and add the new transactions.
     if Path::new(directory).exists() {
         OpenOptions::new().write(true).truncate(true).open(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).expect("Something went wrong.");
-    } else {
+    } 
+    
+    // Else, we will create a new file and add the new transactions.
+    else {
     File::create(directory).unwrap().write_all(serde_json::to_string(&chain).unwrap().as_bytes()).unwrap();
     }  
 }
 
 // This function makes a transaction and adds it to the chain.
 pub fn make_transaction (chain: &mut Vec<(String, Transaction)>, sender: String, receiver: String, amount: f64, signature: (String, String)) {
+
+    // We gather the edges of the transaction being made.
     let edges = select_confirm_tips(chain, signature.clone());
+
+    // We add the transaction to the chain
     chain.push((generate_tx_id(), Transaction { sender:sender, receiver:receiver, amount:amount, signature:signature, status:"pending",
     weight:1, index: generate_index(chain), timestamp: (generate_rfc_2822_timestamp(), generate_unix_timestamp().as_secs_f64()), edges: vec![edges],
     transaction_type: "transaction", readable_hash: "None".to_string(), validators: vec![]}));
+
+    // We update the chain with the new transaction.
     update_chain(chain)
 }
 
