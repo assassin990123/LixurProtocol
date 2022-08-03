@@ -159,15 +159,6 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, id: Str
     // If the chain is empty, this transaction won't have any edges.
     if chain.len() == 0 {
         return ("None".to_string(), "None".to_string())} 
-
-    // def update_cumulative_weights(self, transaction, confirmed_transactions):
-    //     graph = self.graph
-    //     for key in graph:
-    //         if key in confirmed_transactions:
-    //             a = graph[key]
-    //             self_cumulative_weight = transaction.cumulative_weight
-    //             tip_cumulative_weight = a.cumulative_weight
-    //             a.cumulative_weight = self_cumulative_weight + tip_cumulative_weight
     
     // If the chain only has the genesis transaction, that will be the one we will validate.
     if chain.len() == 1 {
@@ -229,7 +220,7 @@ pub fn select_confirm_tips <'a> (chain: &mut Vec<(String, Transaction)>, id: Str
         for x in chain.iter_mut() {
             if x.0 == tx.0 {
                 x.1 = tx.1.clone()}}}
-
+                
     // The edges are returned to be added to the current transaction performing the tip selection.
     return edges;   
     }
