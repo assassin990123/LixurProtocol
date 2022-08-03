@@ -1,13 +1,10 @@
 #![allow(dead_code)]
-pub use pqcrypto_dilithium::dilithium5::DetachedSignature;
-pub use pqcrypto_traits::sign::PublicKey;
-pub use pqcrypto_traits::sign::SecretKey;
-pub use pqcrypto_traits::sign::VerificationError;
-pub use pqcrypto_traits::sign::DetachedSignature as SignatureDetached;
-pub use pqcrypto_dilithium::dilithium5::detached_sign;
-pub use pqcrypto_dilithium::dilithium5::verify_detached_signature;
-pub use pqcrypto_dilithium::dilithium5::keypair;
-pub use magic_crypt::{new_magic_crypt, MagicCryptTrait, MagicCryptError};
+pub use pqcrypto_falcon::falcon1024::{PublicKey, SecretKey, DetachedSignature};
+pub use pqcrypto_falcon::falcon1024::{detached_sign, verify_detached_signature, keypair};
+pub use pqcrypto_traits::sign::{PublicKey as PublicKeyTrait, SecretKey as SecretKeyTrait,
+VerificationError as VerificationErrorTrait, DetachedSignature as SignatureDetached};
+
+pub use magic_crypt::{MagicCryptTrait, MagicCryptError, new_magic_crypt};
 pub use sha2::{Sha256, Digest};
 pub use std::io::Read;
 pub use std::path::Path;
@@ -15,19 +12,19 @@ pub use std::io::Write;
 pub use std::fs::File;
 pub use rand::Rng;
 
-// This function generates and returns a Dilithium-5 derived public, private and a wallet address. 
-pub fn generate_keypair() -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypto_dilithium::dilithium5::SecretKey, String) {
+// This function generates and returns a Falcon1024 derived public, private and a wallet address. 
+pub fn generate_keypair() -> (pqcrypto_falcon::falcon1024::PublicKey, pqcrypto_falcon::falcon1024::SecretKey, String) {
     let (public_key, private_key) = keypair();
     return (public_key, private_key, hash_public_key(public_key));
 }
 
 // This function takes a private and public key, signs them and returns a signature.
-pub fn sign (private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> DetachedSignature {
+pub fn sign (private_key: &pqcrypto_falcon::falcon1024::SecretKey) -> DetachedSignature{
     return detached_sign("Lixur".to_string().as_bytes(), private_key)
 }
 
 // This function verifies the legitimacy of a signature.
-pub fn verify (signature: DetachedSignature, public_key: &pqcrypto_dilithium::dilithium5::PublicKey) -> bool {
+pub fn verify (signature: DetachedSignature, public_key: &pqcrypto_falcon::falcon1024::PublicKey) -> bool {
     let result = verify_detached_signature(&signature, "Lixur".to_string().as_bytes(), public_key);
     if result.is_ok() {
         return true;
@@ -37,7 +34,7 @@ pub fn verify (signature: DetachedSignature, public_key: &pqcrypto_dilithium::di
 }
 
 // This function hashes and returns a hashed string of a given public key using the SHA256 algorithm.
-pub fn hash_public_key(bytes: pqcrypto_dilithium::dilithium5::PublicKey) -> String {
+pub fn hash_public_key(bytes: pqcrypto_falcon::falcon1024::PublicKey) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes.as_bytes());
     let result = hasher.finalize();
@@ -77,7 +74,7 @@ pub fn generate_phrase() -> String {
 }
 
 // Encrypts a given phrase using AES encryption. The user inputs their phrase, public key and private key and the program returns the encrypted phrase.
-pub fn encrypt_wallet(phrase: &String, public_key: &pqcrypto_dilithium::dilithium5::PublicKey, private_key: &pqcrypto_dilithium::dilithium5::SecretKey) -> (String, pqcrypto_dilithium::dilithium5::PublicKey, String, String) {
+pub fn encrypt_wallet(phrase: &String, public_key: &pqcrypto_falcon::falcon1024::PublicKey, private_key: &pqcrypto_falcon::falcon1024::SecretKey) -> (String, pqcrypto_falcon::falcon1024::PublicKey, String, String) {
     let salt = hash_string(&generate_phrase());
     let phrase_and_salt = phrase.to_owned() + &salt;
     return (new_magic_crypt!(&phrase_and_salt, 256).encrypt_bytes_to_base64(private_key.as_bytes()), *public_key,
@@ -85,14 +82,14 @@ pub fn encrypt_wallet(phrase: &String, public_key: &pqcrypto_dilithium::dilithiu
 }
 
 // Decrypts a given phrase using AES decryption. The user inputs their phrase, hash of the phrase + salt, salt and ciphertext and the program returns the private key.
-pub fn decrypt_wallet(phrase: &mut String, hash: &String, salt: &String, ciphertext: &String) -> pqcrypto_dilithium::dilithium5::SecretKey {
+pub fn decrypt_wallet (phrase: &mut String, hash: &String, salt: &String, ciphertext: &String) -> pqcrypto_falcon::falcon1024::SecretKey {
     println!("Please insert your decryption phrase: ");
     loop {std::io::stdin().read_line(phrase).expect("Failed to read line");
         *phrase = phrase.replace("\r", "").replace("\n", "")[..phrase.len() - 41].to_string() + salt;
         if &hash_string(phrase) == hash {
             println!("Success! You've entered the correct phrase, decrypting...");
             let result = new_magic_crypt!(phrase, 256).decrypt_base64_to_string(ciphertext).unwrap();
-            return pqcrypto_dilithium::dilithium5::SecretKey::from_bytes(&result.as_bytes()).unwrap();
+            return pqcrypto_falcon::falcon1024::SecretKey::from_bytes(&result.as_bytes()).unwrap();
         } else {
             println!("Failed to enter the correct phrase, please try again.");
         }
@@ -100,7 +97,7 @@ pub fn decrypt_wallet(phrase: &mut String, hash: &String, salt: &String, ciphert
 }
 
 // Encrypts a given signature and public key using AES encryption. The function returns both values, in an encrypted manner.
-pub fn encrypt_signature_and_public_key (signature: DetachedSignature, public_key: pqcrypto_dilithium::dilithium5::PublicKey) -> (String, String) {
+pub fn encrypt_signature_and_public_key (signature: DetachedSignature, public_key: pqcrypto_falcon::falcon1024::PublicKey) -> (String, String) {
     let signature_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(signature.as_bytes());
     let public_key_cipher = new_magic_crypt!("Lixur").encrypt_bytes_to_base64(public_key.as_bytes());
     return (signature_cipher, public_key_cipher);
@@ -112,8 +109,8 @@ pub fn decrypt_signature (ciphertext: String) -> DetachedSignature {
 }
 
 // Decrypts a given public key using AES decryption. The function returns a decrypted public key.
-pub fn decrypt_public_key (ciphertext: String) -> pqcrypto_dilithium::dilithium5::PublicKey {
-    return pqcrypto_dilithium::dilithium5::PublicKey::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
+pub fn decrypt_public_key (ciphertext: String) -> pqcrypto_falcon::falcon1024::PublicKey {
+    return PublicKey::from_bytes(&new_magic_crypt!("Lixur").decrypt_base64_to_bytes(ciphertext.clone()).unwrap()).unwrap();
 }
 
 // This function generates a keystore file for a user containing the wallet information, which is paramount to be able to access their account.
@@ -145,7 +142,7 @@ pub fn generate_keystore() {
 }
 
 // Loads an existing keystore file for a user. The only parameter needed is the path to the keystore file.
-pub fn load_keystore(directory: &str) -> (pqcrypto_dilithium::dilithium5::PublicKey, pqcrypto_dilithium::dilithium5::SecretKey, String) {
+pub fn load_keystore(directory: &str) -> (pqcrypto_falcon::falcon1024::PublicKey, pqcrypto_falcon::falcon1024::SecretKey, String) {
     println!("Loading keystore file...");
     let mut file = File::open(directory).expect("Failed to open the keystore file. This his could be due to it being corrupted");
     let mut ciphertext = String::new();
@@ -165,7 +162,7 @@ pub fn load_keystore(directory: &str) -> (pqcrypto_dilithium::dilithium5::Public
         if hash_string(&phrase_and_salt) == hash {
             println!("Success! You've entered the correct phrase, decrypting...");
             let private_key = decrypt_wallet(&mut phrase, &hash, &salt, &ciphertext);
-            let public_key = pqcrypto_dilithium::dilithium5::PublicKey::from_bytes(&public_key.as_bytes()).unwrap();
+            let public_key = pqcrypto_falcon::falcon1024::PublicKey::from_bytes(&public_key.as_bytes()).unwrap();
             let hex_address = hash_public_key(public_key);
             return (public_key, private_key, hex_address);
         }

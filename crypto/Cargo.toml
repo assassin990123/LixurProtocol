@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-pqcrypto-dilithium = "0.4.5"
+pqcrypto-falcon = "0.2.10"
 pqcrypto-traits = "0.3.4"
 sha2 = "0.10.2"
 rand = "0.8.5"
