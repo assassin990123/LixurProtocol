@@ -18,8 +18,6 @@ Welcome, we're glad to have you! Lixur is an open-sourced project building a dis
 
 ✅ Fast, infinitely scalable
 
-❎ Snapshots & Recursive Zero-Knowledge Proofs
-
 ❎ Human Readable Addresses
 
 ❎ Decentralized 
