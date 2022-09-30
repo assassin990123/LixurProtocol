@@ -4,8 +4,6 @@
 
 ![image](https://user-images.githubusercontent.com/87288707/155904797-03df3651-ea9d-40e9-9998-14726876519b.png) 
 
-![Screenshot 2021-11-18 191902ccc](https://user-images.githubusercontent.com/87288707/193171037-2f9b981b-eb44-4efc-9e09-c130420f6e2b.jpg)
-
 ![image](https://img.shields.io/badge/server-offline-critical) 
 ![image](https://img.shields.io/badge/version-0.0.1-blueviolet)
 ![image](https://img.shields.io/badge/type-Testnet%20Beta-informational)
