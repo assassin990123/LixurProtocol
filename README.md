@@ -8,35 +8,4 @@
 ![image](https://img.shields.io/badge/type-Testnet%20Beta-informational)
 
 ### What is Lixur ?
-Welcome, we're glad to have you! Lixur is an open-sourced project building a distributed ledger platform. Lixur plans on implementing things such as DAGs and A.I smart contracts which enables fast, feeless, infinitely scalable, quantum resistant and an interconnected ecosystem with no-code SDKs, which users can make use of for any application requiring decentralized, automated intelligence and more. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
- 
-✅ Quantum Resistant Cryptography
-
-✅ Directed Acyclic Graph
-
-✅ Feeless
-
-✅ Fast, infinitely scalable
-
-❎ Human Readable Addresses
-
-❎ Decentralized 
-
-❎ Interconnected Layer Ecosystem with customizable subchains
-
-❎ Smart Contracts, NFTs, Tokens
-
-❎ Intelligent Contracts (A.I. Smart Contracts), Intelligent NFTs
-
-❎ No Code SDK
- 
-### How to Contribute
-
-So you want to contribute? Please, please join our Discord Server and our JetBrains Space Collaboration Platform if you want to contribute to this project. It's a must. Our project management and our project checklist is avaiable on JetBrains and our primary source of communication is Discord, it only takes a minute at most to signup! Open issues or contact us on Discord/JetBrains for things you want to see added, modified, discuss ideas or help out with existing issues. If you have any questions, please contact me on Jetbrains, Discord or if those aren't possible, my email which is `naisukhy@gmail.com`.
-
-<br> [Click here to join our Official Discord Server Link](https://discord.gg/HCRAQHKGeG)
-<br> [Click here to join our Official Jetbrains Space Group Link](https://lixur.jetbrains.space/oauth/auth/invite/4bf814e7091de971b3c9fde59b99eb63)
-
-You could also submit a pull request (fork the code first) and introduce yourself, why you're interested in this project and promise us you'll join the Jetbrains and the Discord Servers. We need to keep in touch with all of our developers.
-
-***If you find any bugs, or anything that should be added, initiate a pull request, add the issue to the repository page or email me personally at:*** `naisukhy@gmail.com`
+Lixur is an open-sourced project that seeks to build a scalable, fast, feeless, decentralized, quantum-resistant, and easy-to-use blockchain with smart, and intelligent (A.I.) contract functionality. To learn more, please read the whitepaper [ 📖 Here 📖](https://github.com/LixurProtocol/Lixur-Protocol/wiki/Lixur-Whitepaper-1.8.6)
